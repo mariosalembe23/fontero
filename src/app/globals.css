@@ -3,24 +3,59 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --poppins: "Poppins", sans-serif;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --breakpoint-smaller: 20rem;
+  --breakpoint-small: 37.4375rem;
+  --breakpoint-ret: 37.5rem;
+  --breakpoint-pot: 56.25rem;
+  --breakpoint-det: 75rem;
+  --breakpoint-lal: 112.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--poppins);
+}
+
+.offPicker {
+  transform: translateY(-200%);
+}
+
+.offAnPicker {
+  transform: translateY(0);
+  transition: all 0.5s ease-in-out;
+  animation: hidePicker 0.5s ease-in-out forwards;
+}
+
+.onPicker {
+  transform: translateY(-200%);
+  transition: all 0.5s ease-in-out;
+  animation: showPicker 0.5s ease-in-out forwards;
+}
+
+@keyframes showPicker {
+  0% {
+    transform: translateY(-200%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes hidePicker {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-200%);
+  }
 }
