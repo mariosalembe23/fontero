@@ -15,12 +15,19 @@
   --breakpoint-lal: 112.5rem;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
+/* edit scroll page */
+::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 
 body {
   font-family: var(--poppins);
@@ -40,6 +47,39 @@ body {
   transform: translateY(-200%);
   transition: all 0.5s ease-in-out;
   animation: showPicker 0.5s ease-in-out forwards;
+}
+
+.addTextNone {
+  transform: translateY(200%);
+}
+
+.addTextOn {
+  transform: translateY(200%);
+  transition: all 0.5s ease-in-out;
+  animation: showText 0.2s ease-in-out forwards;
+}
+.addTextOff {
+  transform: translateY(0);
+  transition: all 0.5s ease-in-out;
+  animation: hideText 0.5s ease-in-out forwards;
+}
+
+@keyframes hideText {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes showText {
+  0% {
+    transform: translateY(200%);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 @keyframes showPicker {
