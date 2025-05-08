@@ -22,7 +22,7 @@ const PickerModal: React.FC<{
     <aside
       ref={ref}
       className={`
-        absolute top-6 ${showPicker === "off" && "offAnPicker"} ${
+        absolute z-30 top-6 ${showPicker === "off" && "offAnPicker"} ${
         showPicker === "none" && "offPicker"
       } ${showPicker === "on" && "onPicker"}  ${
         showPicker !== "none" &&

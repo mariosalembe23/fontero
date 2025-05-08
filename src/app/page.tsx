@@ -17,6 +17,7 @@ interface TextArrProps {
 }
 
 interface UploadFontsProps {
+  id: number;
   fontFamily: string;
   fontData: string;
 }
@@ -31,6 +32,7 @@ export default function Home() {
   const [texts, setTexts] = useState<TextArrProps[]>([]);
   const [importedFonts, setImportedFonts] = useState<UploadFontsProps[]>([
     {
+      id: 0,
       fontFamily: "sans-serif",
       fontData: "",
     },
@@ -38,6 +40,9 @@ export default function Home() {
   const [selectedElement, setSelectedElement] = useState<TextArrProps | null>(
     null
   );
+  const [spaceBetweenTexts, setSpaceBetweenTexts] = useState<string>("0");
+
+  console.log("Texts", texts);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -70,6 +75,8 @@ export default function Home() {
         texts={texts}
         setTexts={setTexts}
         fonts={importedFonts}
+        spaceBetweenTexts={spaceBetweenTexts}
+        setSpaceBetweenTexts={setSpaceBetweenTexts}
       />
       <CentralPannel
         ref={pickerRef}
@@ -83,11 +90,14 @@ export default function Home() {
         texts={texts}
         setTexts={setTexts}
         setSelectedElement={setSelectedElement}
+        spaceBetweenTexts={spaceBetweenTexts}
       />
       <RightPannel
         fonts={importedFonts}
         setFonts={setImportedFonts}
         selectedElement={selectedElement}
+        setTexts={setTexts}
+        setSelectedElement={setSelectedElement}
       />
     </div>
   );

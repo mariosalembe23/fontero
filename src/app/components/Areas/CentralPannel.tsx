@@ -27,6 +27,7 @@ interface CentralPannelProps {
   texts: TextArrProps[];
   setTexts: React.Dispatch<React.SetStateAction<TextArrProps[]>>;
   setSelectedElement: React.Dispatch<React.SetStateAction<TextArrProps | null>>;
+  spaceBetweenTexts: string;
 }
 
 const CentralPannel: React.FC<CentralPannelProps> = ({
@@ -41,11 +42,19 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
   texts,
   setTexts,
   setSelectedElement,
+  spaceBetweenTexts,
 }) => {
   const addTextRef = useRef<HTMLTextAreaElement | null>(null);
-  const [selected, setSelected] = useState<boolean>(false);
   const refBoxText = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const [selected, setSelected] = useState(false);
   const [idSelected, setIdSelected] = useState<number | null>(null);
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const [isDragging, setIsDragging] = useState(false);
+  const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -68,8 +77,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as HTMLElement;
-
-      if (target.tagName === "A" || target.classList.contains('ignore-click')) {
+      if (target.tagName === "A" || target.classList.contains("ignore-click")) {
         return;
       }
 
@@ -98,6 +106,58 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
     setSelectedElement,
   ]);
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    function handleWheel(e: WheelEvent) {
+      if (!e.ctrlKey) return;
+
+      e.preventDefault();
+
+      const rect = container?.getBoundingClientRect();
+      if (!rect) return;
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const zoomIntensity = 0.001;
+      const delta = -e.deltaY * zoomIntensity;
+      const newScale = Math.min(3, Math.max(0.5, scale + delta));
+
+      const scaleRatio = newScale / scale;
+
+      setPosition((prev) => ({
+        x: mouseX - (mouseX - prev.x) * scaleRatio,
+        y: mouseY - (mouseY - prev.y) * scaleRatio,
+      }));
+
+      setScale(parseFloat(newScale.toFixed(3)));
+    }
+
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    return () => container.removeEventListener("wheel", handleWheel);
+  }, [scale]);
+
+  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    setLastMousePos({ x: e.clientX, y: e.clientY });
+  };
+
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    const dx = e.clientX - lastMousePos.x;
+    const dy = e.clientY - lastMousePos.y;
+    setPosition((prev) => ({
+      x: prev.x + dx,
+      y: prev.y + dy,
+    }));
+    setLastMousePos({ x: e.clientX, y: e.clientY });
+  };
+
+  const onMouseUp = () => {
+    setIsDragging(false);
+  };
+
   const addNewText = (text: string) => {
     const newText = {
       id: texts.length > 0 ? texts[texts.length - 1].id + 1 : 1,
@@ -106,7 +166,6 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
       fontFamily: "sans-serif",
       color: "#000000",
       weight: "400",
-      fontData: null,
     };
 
     setTexts((prevTexts) => [...prevTexts, newText]);
@@ -115,10 +174,8 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
 
   return (
     <div
-      style={{
-        backgroundColor: color,
-      }}
-      className="relative h-screen"
+      style={{ backgroundColor: color }}
+      className="relative h-screen w-full overflow-hidden"
     >
       <PickerModal
         ref={ref}
@@ -135,43 +192,56 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
         addTextRef={addTextRef}
       />
 
-      <div className="h-screen overflow-y-auto w-full flex flex-col gap-2 items-center justify-center">
-        {texts.map((text, index) => (
-          <div
-            ref={refBoxText}
-            key={index}
-            style={{
-              fontSize: parseInt(text.size) + "px",
-              fontFamily: text.fontFamily,
-              color: text.color,
-              fontWeight: parseInt(text.weight),
-            }}
-            className={`select-none cursor-pointer relative py-1 px-3 ${
-              selected && idSelected === text.id
-                ? "border border-zinc-200 rounded-lg"
-                : ""
-            }`}
-            onClick={() => {
-              setSelected(true);
-              setIdSelected(text.id);
-              setSelectedElement({
-                id: text.id,
-                text: text.text,
-                size: text.size,
+      <div
+        ref={containerRef}
+        className="h-full w-full cursor-grab active:cursor-grabbing"
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
+      >
+        <div
+          style={{
+            transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+            transformOrigin: "0 0",
+            gap: `${
+              parseInt(spaceBetweenTexts) > 800
+                ? 800 + "px"
+                : parseInt(spaceBetweenTexts) + "px"
+            }`,
+          }}
+          className="relative w-full h-full flex flex-col items-center justify-center"
+        >
+          {texts.map((text, index) => (
+            <div
+              ref={refBoxText}
+              key={index + '-' + text.fontFamily}
+              style={{
+                fontSize: `${parseInt(text.size)}px`,
                 fontFamily: text.fontFamily,
                 color: text.color,
-                weight: text.weight,
-              });
-            }}
-          >
-            {text.text}
-            {selected && idSelected === text.id && (
-              <button className="absolute text-[13px] font-['Inter'] font-normal -top-5 -right-16 transition-all hover:opacity-90 text-white border bg-blue-500 rounded-lg py-1 px-2">
-                Editar texto
-              </button>
-            )}
-          </div>
-        ))}
+                fontWeight: parseInt(text.weight),
+              }}
+              className={`select-none cursor-pointer relative py-1 px-3 ${
+                selected && idSelected === text.id
+                  ? "border border-zinc-200 rounded-lg"
+                  : ""
+              }`}
+              onClick={() => {
+                setSelected(true);
+                setIdSelected(text.id);
+                setSelectedElement(text);
+              }}
+            >
+              {text.text}
+              {selected && idSelected === text.id && (
+                <button className="absolute text-[13px] font-['Inter'] font-normal -top-5 -right-16 transition-all hover:opacity-90 text-white border bg-blue-500 rounded-lg py-1 px-2">
+                  Editar texto
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

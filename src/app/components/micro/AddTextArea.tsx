@@ -22,7 +22,7 @@ const AddTextArea: React.FC<{
   return (
     <aside
       ref={addTextRef}
-      className={`fixed ${showAddText === "off" && "addTextOff"} ${
+      className={`fixed z-30 ${showAddText === "off" && "addTextOff"} ${
         showAddText === "none" && "addTextNone"
       } ${showAddText === "on" && "addTextOn"}  ${
         showAddText !== "none" &&
