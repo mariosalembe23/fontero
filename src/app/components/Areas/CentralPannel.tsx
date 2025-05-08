@@ -1,9 +1,19 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import PickerModal from "../PickerModal";
+import AddTextArea from "../micro/AddTextArea";
 
 type TextProps = "off" | "on" | "none";
+
+interface TextArrProps {
+  id: number;
+  text: string;
+  size: string;
+  fontFamily: string;
+  color: string;
+  weight: string;
+}
 
 interface CentralPannelProps {
   color: string;
@@ -14,6 +24,8 @@ interface CentralPannelProps {
   setAddText: React.Dispatch<React.SetStateAction<TextProps>>;
   showAddText: string;
   buttonRef: React.RefObject<HTMLButtonElement | null>;
+  texts: TextArrProps[];
+  setTexts: React.Dispatch<React.SetStateAction<TextArrProps[]>>;
 }
 
 const CentralPannel: React.FC<CentralPannelProps> = ({
@@ -25,8 +37,13 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
   setAddText,
   showAddText,
   buttonRef,
+  texts,
+  setTexts,
 }) => {
   const addTextRef = useRef<HTMLTextAreaElement | null>(null);
+  const [selected, setSelected] = useState<boolean>(false);
+  const refBoxText = useRef<HTMLDivElement | null>(null);
+  const [idSelected, setIdSelected] = useState<number | null>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -46,12 +63,44 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
     };
   }, [addTextRef, showAddText, buttonRef, setAddText]);
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        refBoxText.current &&
+        !refBoxText.current.contains(event.target as Node) &&
+        !buttonRef.current?.contains(event.target as Node) &&
+        selected
+      ) {
+        setSelected(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [refBoxText, selected, buttonRef]);
+
+  const addNewText = (text: string) => {
+    const newText = {
+      id: texts.length > 0 ? texts[texts.length - 1].id + 1 : 1,
+      text: text,
+      size: "16",
+      fontFamily: "sans-serif",
+      color: "#000000",
+      weight: "400",
+    };
+
+    setTexts((prevTexts) => [...prevTexts, newText]);
+    setAddText("off");
+  };
+
   return (
     <div
       style={{
         backgroundColor: color,
       }}
-      className="relative h-full"
+      className="relative h-screen"
     >
       <PickerModal
         ref={ref}
@@ -61,37 +110,41 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
         setColor={setColor}
       />
 
-      <aside
-        ref={addTextRef}
-        className={`fixed ${showAddText === "off" && "addTextOff"} ${
-          showAddText === "none" && "addTextNone"
-        } ${showAddText === "on" && "addTextOn"}  ${
-          showAddText !== "none" &&
-          showAddText !== "on" &&
-          showAddText !== "off" &&
-          "translate-y-[200%]"
-        }  bottom-5 p-3 left-1/2 -translate-x-1/2 bg-white gap-2 flex flex-col border border-zinc-200 rounded-xl shadow-md w-[23%]`}
-      >
-        <div className="flex items-center justify-between">
-          <label
-            htmlFor="new_text"
-            className="text-[14px] font-medium text-zinc-700"
-          >
-            Adicione um texto
-          </label>
-        </div>
-        <textarea
-          placeholder="Escreva um texto..."
-          className="border-zinc-300 text-[15px] outline-none border rounded-md resize-none p-3"
-          name="new_text"
-          id="new_text"
-        ></textarea>
-        <button className="bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600 transition-colors duration-200 cursor-pointer">
-          Adicionar
-        </button>
-      </aside>
+      <AddTextArea
+        addNewText={addNewText}
+        showAddText={showAddText}
+        setAddText={setAddText}
+        addTextRef={addTextRef}
+      />
 
-      <div className="h-full w-full flex items-center justify-center overflow-y-auto"></div>
+      <div className="h-screen overflow-y-auto w-full flex flex-col gap-2 items-center justify-center">
+        {texts.map((text, index) => (
+          <div
+            ref={refBoxText}
+            key={index}
+            style={{
+              fontSize: parseInt(text.size) + "px",
+              fontFamily: text.fontFamily,
+              color: text.color,
+              fontWeight: parseInt(text.weight),
+            }}
+            className={`select-none cursor-pointer relative py-1 px-3 ${
+              selected && idSelected === text.id ? "border border-zinc-200 rounded-lg" : ""
+            }`}
+            onClick={() => {
+              setSelected(true)
+              setIdSelected(text.id)
+            }}
+          >
+            {text.text}
+            {selected && idSelected === text.id && (
+              <button className="absolute text-[13px] font-normal -top-5 -right-16 transition-all hover:opacity-90 text-white border bg-blue-500 rounded-lg py-1 px-2">
+                Editar texto
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

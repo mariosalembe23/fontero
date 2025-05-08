@@ -7,13 +7,27 @@ import RightPannel from "./components/Areas/RightPannel";
 
 type TextProps = "off" | "on" | "none";
 
+interface TextArrProps {
+  id: number,
+  text: string;
+  size: string;
+  fontFamily: string;
+  color: string;
+  weight: string;
+}
+
 export default function Home() {
   const [color, setColor] = useState<string>("#f5f5f5");
   const [showPicker, setShowPicker] = useState<string>("none");
   const pickerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [showAddText, setShowAddText] = useState<TextProps>('none');
+  const [showAddText, setShowAddText] = useState<TextProps>("none");
   const buttonRefAddText = useRef<HTMLButtonElement>(null);
+  const [texts, setTexts] = useState<TextArrProps[]>([]);
+  const [importedFonts, setImportedFonts] = useState<string[]>([
+    "Sans-serif",
+  ]);
+  
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -43,6 +57,9 @@ export default function Home() {
         setAddText={setShowAddText}
         showAddText={showAddText}
         buttonRefAddText={buttonRefAddText}
+        texts={texts}
+        setTexts={setTexts}
+        fonts={importedFonts}
       />
       <CentralPannel
         ref={pickerRef}
@@ -53,8 +70,10 @@ export default function Home() {
         setAddText={setShowAddText}
         showAddText={showAddText}
         buttonRef={buttonRefAddText}
+        texts={texts}
+        setTexts={setTexts}
       />
-      <RightPannel />
+      <RightPannel fonts={importedFonts} setFonts={setImportedFonts} />
     </div>
   );
 }
