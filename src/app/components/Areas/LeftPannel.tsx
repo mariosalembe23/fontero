@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useEffect } from "react";
 import PickerModal from "../PickerModal";
-import 'tippy.js/dist/tippy.css';
+import "tippy.js/dist/tippy.css";
 
 type TextProps = "off" | "on" | "none";
 
@@ -13,7 +13,7 @@ interface ItemTextArrProps {
   color: string;
   weight: string;
   setTexts: React.Dispatch<React.SetStateAction<TextArrProps[]>>;
-  fonts: string[];
+  fonts: UploadFontsProps[];
 }
 
 interface TextArrProps {
@@ -23,6 +23,11 @@ interface TextArrProps {
   fontFamily: string;
   color: string;
   weight: string;
+}
+
+interface UploadFontsProps {
+  fontFamily: string;
+  fontData: string;
 }
 
 interface LeftPannelProps {
@@ -35,7 +40,7 @@ interface LeftPannelProps {
   buttonRefAddText: React.RefObject<HTMLButtonElement | null>;
   texts: TextArrProps[];
   setTexts: React.Dispatch<React.SetStateAction<TextArrProps[]>>;
-  fonts: string[];
+  fonts: UploadFontsProps[];
 }
 
 const ItemText: React.FC<ItemTextArrProps> = ({
@@ -95,6 +100,10 @@ const ItemText: React.FC<ItemTextArrProps> = ({
     newWeight,
     weight,
   ]);
+
+  const handleDelete = () => {
+    setTexts((prev) => prev.filter((item) => item.id !== id));
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -157,8 +166,8 @@ const ItemText: React.FC<ItemTextArrProps> = ({
             className="text-[14px] outline-none w-full"
           >
             {fonts.map((font, index) => (
-              <option key={index} value={font}>
-                {font}
+              <option key={index} value={font.fontFamily}>
+                {font.fontFamily}
               </option>
             ))}
           </select>
@@ -205,7 +214,11 @@ const ItemText: React.FC<ItemTextArrProps> = ({
             <p className="uppercase text-[13px] text-zinc-700">{newColor}</p>
           </div>
           <div>
-            <button className="text-[13px] border bg-red-400/30 border-red-300 transition-all hover:bg-red-400/50 text-red-500 font-medium py-1 w-full rounded-md">
+            <button
+              onClick={handleDelete}
+              type="button"
+              className="text-[13px] border cursor-pointer bg-red-400/30 border-red-300 transition-all hover:bg-red-400/50 text-red-500 font-medium py-1 w-full rounded-md"
+            >
               Deletar
             </button>
           </div>

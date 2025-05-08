@@ -8,12 +8,17 @@ import RightPannel from "./components/Areas/RightPannel";
 type TextProps = "off" | "on" | "none";
 
 interface TextArrProps {
-  id: number,
+  id: number;
   text: string;
   size: string;
   fontFamily: string;
   color: string;
   weight: string;
+}
+
+interface UploadFontsProps {
+  fontFamily: string;
+  fontData: string;
 }
 
 export default function Home() {
@@ -24,10 +29,15 @@ export default function Home() {
   const [showAddText, setShowAddText] = useState<TextProps>("none");
   const buttonRefAddText = useRef<HTMLButtonElement>(null);
   const [texts, setTexts] = useState<TextArrProps[]>([]);
-  const [importedFonts, setImportedFonts] = useState<string[]>([
-    "Sans-serif",
+  const [importedFonts, setImportedFonts] = useState<UploadFontsProps[]>([
+    {
+      fontFamily: "sans-serif",
+      fontData: "",
+    },
   ]);
-  
+  const [selectedElement, setSelectedElement] = useState<TextArrProps | null>(
+    null
+  );
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -72,8 +82,13 @@ export default function Home() {
         buttonRef={buttonRefAddText}
         texts={texts}
         setTexts={setTexts}
+        setSelectedElement={setSelectedElement}
       />
-      <RightPannel fonts={importedFonts} setFonts={setImportedFonts} />
+      <RightPannel
+        fonts={importedFonts}
+        setFonts={setImportedFonts}
+        selectedElement={selectedElement}
+      />
     </div>
   );
 }

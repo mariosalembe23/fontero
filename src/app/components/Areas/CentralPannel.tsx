@@ -26,6 +26,7 @@ interface CentralPannelProps {
   buttonRef: React.RefObject<HTMLButtonElement | null>;
   texts: TextArrProps[];
   setTexts: React.Dispatch<React.SetStateAction<TextArrProps[]>>;
+  setSelectedElement: React.Dispatch<React.SetStateAction<TextArrProps | null>>;
 }
 
 const CentralPannel: React.FC<CentralPannelProps> = ({
@@ -39,6 +40,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
   buttonRef,
   texts,
   setTexts,
+  setSelectedElement,
 }) => {
   const addTextRef = useRef<HTMLTextAreaElement | null>(null);
   const [selected, setSelected] = useState<boolean>(false);
@@ -65,6 +67,12 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+
+      if (target.tagName === "A" || target.classList.contains('ignore-click')) {
+        return;
+      }
+
       if (
         refBoxText.current &&
         !refBoxText.current.contains(event.target as Node) &&
@@ -72,6 +80,8 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
         selected
       ) {
         setSelected(false);
+        setIdSelected(null);
+        setSelectedElement(null);
       }
     }
 
@@ -79,7 +89,14 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [refBoxText, selected, buttonRef]);
+  }, [
+    refBoxText,
+    selected,
+    buttonRef,
+    setSelected,
+    setIdSelected,
+    setSelectedElement,
+  ]);
 
   const addNewText = (text: string) => {
     const newText = {
@@ -89,6 +106,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
       fontFamily: "sans-serif",
       color: "#000000",
       weight: "400",
+      fontData: null,
     };
 
     setTexts((prevTexts) => [...prevTexts, newText]);
@@ -129,16 +147,26 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
               fontWeight: parseInt(text.weight),
             }}
             className={`select-none cursor-pointer relative py-1 px-3 ${
-              selected && idSelected === text.id ? "border border-zinc-200 rounded-lg" : ""
+              selected && idSelected === text.id
+                ? "border border-zinc-200 rounded-lg"
+                : ""
             }`}
             onClick={() => {
-              setSelected(true)
-              setIdSelected(text.id)
+              setSelected(true);
+              setIdSelected(text.id);
+              setSelectedElement({
+                id: text.id,
+                text: text.text,
+                size: text.size,
+                fontFamily: text.fontFamily,
+                color: text.color,
+                weight: text.weight,
+              });
             }}
           >
             {text.text}
             {selected && idSelected === text.id && (
-              <button className="absolute text-[13px] font-normal -top-5 -right-16 transition-all hover:opacity-90 text-white border bg-blue-500 rounded-lg py-1 px-2">
+              <button className="absolute text-[13px] font-['Inter'] font-normal -top-5 -right-16 transition-all hover:opacity-90 text-white border bg-blue-500 rounded-lg py-1 px-2">
                 Editar texto
               </button>
             )}

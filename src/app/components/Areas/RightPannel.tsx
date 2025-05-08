@@ -1,9 +1,25 @@
 import Link from "next/link";
+import "tippy.js/dist/tippy.css";
 import React, { useRef } from "react";
 import { toast, Toaster } from "sonner";
+import opentype from "opentype.js";
 
 interface FontComponentProps {
   fontName: string | null;
+}
+
+interface TextArrProps {
+  id: number;
+  text: string;
+  size: string;
+  fontFamily: string;
+  color: string;
+  weight: string;
+}
+
+interface UploadFontsProps {
+  fontFamily: string;
+  fontData: string;
 }
 
 const FontComponent: React.FC<FontComponentProps> = ({ fontName }) => {
@@ -33,9 +49,10 @@ const FontComponent: React.FC<FontComponentProps> = ({ fontName }) => {
 };
 
 const RightPannel: React.FC<{
-  fonts: string[];
-  setFonts: React.Dispatch<React.SetStateAction<string[]>>;
-}> = ({ fonts, setFonts }) => {
+  fonts: UploadFontsProps[];
+  setFonts: React.Dispatch<React.SetStateAction<UploadFontsProps[]>>;
+  selectedElement: TextArrProps | null;
+}> = ({ fonts, setFonts, selectedElement }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFontUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +63,7 @@ const RightPannel: React.FC<{
 
     reader.onload = function (event) {
       const fontData = event.target?.result;
+
       if (!fontData) return;
 
       const rawName = file.name.replace(/\.[^/.]+$/, "");
@@ -59,7 +77,10 @@ const RightPannel: React.FC<{
           }
         `;
       document.head.appendChild(style);
-      setFonts((prevFonts) => [...prevFonts, safeName]);
+      setFonts((prevFonts) => [
+        ...prevFonts,
+        { fontFamily: safeName, fontData: fontData as string },
+      ]);
       toast.success(`Fonte ${safeName} adicionada com sucesso!`);
     };
 
@@ -75,40 +96,51 @@ const RightPannel: React.FC<{
   const downloadSVG = (
     text: string,
     fontFamily: string,
-    fontDataUrl: string
+    fontSize: string,
   ) => {
-    const width = 800;
-    const height = 200;
-    const fontSize = 48;
+    const fontDataObj = fonts.find((f) => f.fontFamily === fontFamily);
+    if (!fontDataObj) {
+      alert("Fonte não encontrada para exportação.");
+      return;
+    }
 
-    // SVG com <style> embutido e texto com fonte personalizada
-    const svgContent = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-        <style>
-          @font-face {
-            font-family: '${fontFamily}';
-            src: url('${fontDataUrl}') format('truetype');
-          }
-          text {
-            font-family: '${fontFamily}';
-            font-size: ${fontSize}px;
-            fill: black;
-          }
-        </style>
-        <text x="20" y="100">${text}</text>
-      </svg>
-    `;
+    const fontSizePx = parseInt(fontSize);
 
-    const blob = new Blob([svgContent], {
-      type: "image/svg+xml;charset=utf-8",
+    opentype.load(fontDataObj.fontData, (err, font) => {
+      if (err) {
+        console.error("Erro ao carregar a fonte:", err);
+        return;
+      }
+
+      const path = font?.getPath(text, 0, fontSizePx, fontSizePx);
+      const bbox = path?.getBoundingBox();
+      const svgPath = path?.toSVG(3);
+
+      if (!bbox) {
+        console.error("Bounding box is undefined.");
+        return;
+      }
+      const width = Math.ceil(bbox.x2 - bbox.x1);
+      const height = Math.ceil(bbox.y2 - bbox.y1);
+
+      const svgContent = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${bbox.x1} ${bbox.y1} ${width} ${height}">
+          ${svgPath}
+        </svg>
+      `;
+
+      const blob = new Blob([svgContent], {
+        type: "image/svg+xml;charset=utf-8",
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${text}-logo.svg`;
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(url);
     });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "texto-personalizado.svg";
-    a.click();
-    URL.revokeObjectURL(url);
   };
 
   return (
@@ -129,8 +161,8 @@ const RightPannel: React.FC<{
         />
         <div className="mt-4">
           <div className="grid grid-cols-1 gap-2 mb-4">
-            {fonts.map((font, index) => (
-              <FontComponent key={index} fontName={font} />
+            {fonts.slice(1).map((font, index) => (
+              <FontComponent key={index} fontName={font.fontFamily} />
             ))}
           </div>
           <button
@@ -160,7 +192,17 @@ const RightPannel: React.FC<{
       </header>
       <footer className="w-full flex flex-col">
         <div className="grid grid-cols-1 my-5 items-center justify-between">
-          <button className="transition-all  hover:bg-blue-600 cursor-pointer bg-blue-500 py-2 rounded-lg gap-2 text-[15px] text-white flex items-center justify-center">
+          <button
+            onClick={() => {
+              downloadSVG(
+                selectedElement?.text || "",
+                selectedElement?.fontFamily || "",
+                selectedElement?.size || "",
+              );
+            }}
+            disabled={!selectedElement}
+            className="transition-all ignore-click disabled:opacity-50 disabled:hover:bg-blue-500 hover:bg-blue-600 cursor-pointer bg-blue-500 py-2 rounded-lg gap-2 text-[15px] text-white flex items-center justify-center"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
