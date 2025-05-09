@@ -53,15 +53,6 @@ const ItemText: React.FC<{
       newSize !== size ||
       newWeight !== weight
     ) {
-      console.log("Atualizando texto no ItemText:", {
-        id,
-        text,
-        color: newColor,
-        fontFamily: newFontFamily,
-        size: newSize,
-        weight: newWeight,
-      });
-
       dispatch(
         updateText({
           id,

@@ -1,20 +1,27 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "./Redux/store";
 import LeftPannel from "./components/Areas/LeftPannel";
 import CentralPannel from "./components/Areas/CentralPannel";
 import RightPannel from "./components/Areas/RightPannel";
 import { addFont } from "./Redux/slices/fontsSlice";
+import { useDispatch } from "react-redux";
+
 
 type TextProps = "off" | "on" | "none";
 
+interface TextArrProps {
+  id: number;
+  text: string;
+  size: string;
+  fontFamily: string;
+  color: string;
+  weight: string;
+}
+
 export default function Home() {
   const dispatch = useDispatch();
-  const texts = useSelector((state: RootState) => state.texts);
-  const fonts = useSelector((state: RootState) => state.fonts);
-
+  
   const [color, setColor] = useState<string>("#f5f5f5");
   const [showPicker, setShowPicker] = useState<string>("none");
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -22,6 +29,9 @@ export default function Home() {
   const [showAddText, setShowAddText] = useState<TextProps>("none");
   const buttonRefAddText = useRef<HTMLButtonElement>(null);
   const [spaceBetweenTexts, setSpaceBetweenTexts] = useState<string>("0");
+  const [selectedElement, setSelectedElement] = useState<TextArrProps | null>(
+    null
+  );
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -55,9 +65,6 @@ export default function Home() {
     handleAddText();
   }, [dispatch]);
 
-  console.log("texts", texts);
-  console.log("fonts", fonts);
-
   return (
     <div className="grid grid-cols-[15%_70%_15%] w-full h-screen">
       <LeftPannel
@@ -81,8 +88,13 @@ export default function Home() {
         showAddText={showAddText}
         buttonRef={buttonRefAddText}
         spaceBetweenTexts={spaceBetweenTexts}
+        setSelectedElement={setSelectedElement}
+        selectedElement={selectedElement}
       />
-      <RightPannel />
+      <RightPannel
+        setSelectedElement={setSelectedElement}
+        selectedElement={selectedElement}
+      />
     </div>
   );
 }

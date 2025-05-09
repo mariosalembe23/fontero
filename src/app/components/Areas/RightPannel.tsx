@@ -56,12 +56,12 @@ const FontComponent: React.FC<FontComponentProps> = ({
   );
 };
 
-const RightPannel: React.FC = () => {
+const RightPannel: React.FC<{
+  setSelectedElement: React.Dispatch<React.SetStateAction<TextArrProps | null>>;
+  selectedElement: TextArrProps | null;
+}> = ({ selectedElement }) => {
   const dispatch = useDispatch();
   const fonts = useSelector((state: RootState) => state.fonts);
-  const selectedElement = useSelector(
-    (state: RootState) => state.selectedElement
-  ) as TextArrProps | null;
 
   const inputRef = useRef<HTMLInputElement>(null);
 

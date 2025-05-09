@@ -4,11 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { addText } from "../../Redux/slices/textsSlice";
-import { setSelectedElement } from "../../Redux/slices/selectedElementSlice";
 import PickerModal from "../PickerModal";
 import AddTextArea from "../micro/AddTextArea";
 
 type TextProps = "off" | "on" | "none";
+
+interface TextArrProps {
+  id: number;
+  text: string;
+  size: string;
+  fontFamily: string;
+  color: string;
+  weight: string;
+}
 
 interface CentralPannelProps {
   color: string;
@@ -20,6 +28,8 @@ interface CentralPannelProps {
   showAddText: string;
   buttonRef: React.RefObject<HTMLButtonElement | null>;
   spaceBetweenTexts: string;
+  setSelectedElement: React.Dispatch<React.SetStateAction<TextArrProps | null>>;
+  selectedElement: TextArrProps | null;
 }
 
 const CentralPannel: React.FC<CentralPannelProps> = ({
@@ -32,13 +42,16 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
   showAddText,
   buttonRef,
   spaceBetweenTexts,
+  setSelectedElement,
+  selectedElement,
 }) => {
   const dispatch = useDispatch();
   const texts = useSelector((state: RootState) => state.texts);
 
   const addTextRef = useRef<HTMLTextAreaElement | null>(null);
-  const refBoxText = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const refs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const [editMode, setEditMode] = useState(false);
 
   const [selected, setSelected] = useState(false);
   const [idSelected, setIdSelected] = useState<number | null>(null);
@@ -69,19 +82,19 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as HTMLElement;
+
       if (target.tagName === "A" || target.classList.contains("ignore-click")) {
         return;
       }
 
-      if (
-        refBoxText.current &&
-        !refBoxText.current.contains(event.target as Node) &&
-        !buttonRef.current?.contains(event.target as Node) &&
-        selected
-      ) {
+      const clickedOutside = Object.values(refs.current).every(
+        (ref) => ref && !ref.contains(event.target as Node)
+      );
+
+      if (clickedOutside && selected && idSelected !== null) {
         setSelected(false);
         setIdSelected(null);
-        dispatch(setSelectedElement(null));
+        setSelectedElement(null);
       }
     }
 
@@ -89,7 +102,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [refBoxText, selected, buttonRef, dispatch]);
+  }, [refs, selected, idSelected, setSelected, setSelectedElement]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -122,6 +135,9 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
     container.addEventListener("wheel", handleWheel, { passive: false });
     return () => container.removeEventListener("wheel", handleWheel);
   }, [scale]);
+
+  useEffect(() => {
+  }, [selectedElement]);
 
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
@@ -175,6 +191,8 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
         showAddText={showAddText}
         setAddText={setAddText}
         addTextRef={addTextRef}
+        editMode={editMode}
+        data={selectedElement}
       />
 
       <div
@@ -200,7 +218,9 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
           {texts.map((text) => (
             <div
               id={`text-${text.id}`}
-              ref={refBoxText}
+              ref={(el) => {
+                refs.current[text.id] = el;
+              }}
               key={text.id}
               style={{
                 fontSize: `${parseInt(text.size)}px`,
@@ -216,12 +236,19 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
               onClick={() => {
                 setSelected(true);
                 setIdSelected(text.id);
-                dispatch(setSelectedElement(text));
+                setSelectedElement(text);
               }}
             >
               {text.text}
               {selected && idSelected === text.id && (
-                <button className="absolute text-[13px] font-['Inter'] font-normal -top-5 -right-16 transition-all hover:opacity-90 text-white border bg-blue-500 rounded-lg py-1 px-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditMode(true);
+                    setAddText("on");
+                  }}
+                  className="absolute ignore-click text-[13px] font-['Inter'] font-normal -top-5 -right-16 transition-all hover:opacity-90 text-white border bg-blue-500 rounded-lg py-1 px-2"
+                >
                   Editar texto
                 </button>
               )}
