@@ -6,6 +6,7 @@ import "tippy.js/dist/tippy.css";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { updateText, removeText } from "../../Redux/slices/textsSlice";
+import Link from "next/link";
 
 type TextProps = "off" | "on" | "none";
 
@@ -228,7 +229,26 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
     <div className="border-r h-screen border-zinc-200 flex items-start flex-col justify-between py-8">
       <section className="w-full">
         <header className="px-5 flex items-center justify-between">
-          <h2 className="font-semibold text-lg text-zinc-900">fonteiro</h2>
+          <h2 className="font-semibold text-lg text-zinc-900">fontero</h2>
+          <div className="">
+            <button className="flex items-center text-blue-500 justify-center w-8 h-8 gap-2 rounded-full border border-blue-500 bg-white text-[14px]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="icon size-6 icon-tabler icons-tabler-filled icon-tabler-bulb"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M4 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" />
+                <path d="M12 2a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z" />
+                <path d="M21 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" />
+                <path d="M4.893 4.893a1 1 0 0 1 1.32 -.083l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 0 -1.414z" />
+                <path d="M17.693 4.893a1 1 0 0 1 1.497 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7z" />
+                <path d="M14 18a1 1 0 0 1 1 1a3 3 0 0 1 -6 0a1 1 0 0 1 .883 -.993l.117 -.007h4z" />
+                <path d="M12 6a6 6 0 0 1 3.6 10.8a1 1 0 0 1 -.471 .192l-.129 .008h-6a1 1 0 0 1 -.6 -.2a6 6 0 0 1 3.6 -10.8z" />
+              </svg>
+            </button>
+          </div>
         </header>
         <section className="border-t px-5 w-full border-zinc-200 mt-4 pt-4">
           <h2 className="text-zinc-700 font-medium text-[15px]">Página</h2>
@@ -300,6 +320,78 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
           </footer>
         </div>
       </section>
+      <footer className="px-5 flex flex-col items-start">
+        <div className="flex items-center justify-center gap-2">
+          <Link
+            href={"https://github.com/mariosalembe23"}
+            target="_blank"
+            className="w-8 h-8 flex items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="icon size-5 icon-tabler icons-tabler-outline icon-tabler-brand-github"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+            </svg>
+          </Link>
+          <Link
+            href={"https://www.linkedin.com/in/m%C3%A1rio-salembe-5211792a6/"}
+            target="_blank"
+            className="w-8 h-8 flex items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              className="icon size-5 icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M8 11v5" />
+              <path d="M8 8v.01" />
+              <path d="M12 16v-5" />
+              <path d="M16 16v-3a2 2 0 1 0 -4 0" />
+              <path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" />
+            </svg>
+          </Link>
+          <Link
+            href={"https://dribbble.com/mariosalembe_"}
+            target="_blank"
+            className="w-8 h-8 flex items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              className="icon size-5 icon-tabler icons-tabler-outline icon-tabler-brand-dribbble"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+              <path d="M9 3.6c5 6 7 10.5 7.5 16.2" />
+              <path d="M6.4 19c3.5 -3.5 6 -6.5 14.5 -6.4" />
+              <path d="M3.1 10.75c5 0 9.814 -.38 15.314 -5" />
+            </svg>
+          </Link>
+        </div>
+        <div className="text-zinc-600 mt-4">
+          <p className="leading-none">Mário Salembe</p>
+          <small>2023 © Todos os direitos reservados</small>
+        </div>
+      </footer>
     </div>
   );
 };
