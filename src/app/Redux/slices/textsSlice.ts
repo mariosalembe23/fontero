@@ -16,6 +16,7 @@ const textsSlice = createSlice({
   initialState,
   reducers: {
     addText: (state, action: PayloadAction<TextArrProps>) => {
+      
       state.push(action.payload);
     },
     updateText: (state, action: PayloadAction<TextArrProps>) => {

@@ -136,8 +136,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
     return () => container.removeEventListener("wheel", handleWheel);
   }, [scale]);
 
-  useEffect(() => {
-  }, [selectedElement]);
+  useEffect(() => {}, [selectedElement]);
 
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
@@ -165,7 +164,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
         id: Date.now(),
         text: text,
         size: "16",
-        fontFamily: "sans-serif",
+        fontFamily: "Roboto",
         color: "#000000",
         weight: "400",
       })

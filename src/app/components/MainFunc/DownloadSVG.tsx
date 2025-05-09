@@ -1,4 +1,5 @@
 import opentype from "opentype.js";
+import { toast } from "sonner";
 
 interface UploadFontsProps {
   fontFamily: string;
@@ -9,11 +10,16 @@ const downloadSVG = (
   text: string,
   fontFamily: string,
   fontSize: string,
-  fonts: UploadFontsProps[]
+  fonts: UploadFontsProps[],
+  color: string // Adicione o parâmetro de cor
 ) => {
   const fontDataObj = fonts.find((f) => f.fontFamily === fontFamily);
   if (!fontDataObj) {
-    alert("Fonte não encontrada para exportação.");
+    toast.error("Fonte não encontrada para exportação.", {
+      classNames: {
+        toast: "!text-red-600",
+      },
+    });
     return;
   }
 
@@ -22,6 +28,7 @@ const downloadSVG = (
   opentype.load(fontDataObj.fontData, (err, font) => {
     if (err) {
       console.error("Erro ao carregar a fonte:", err);
+      console.error("Font data:", fontDataObj.fontData);
       return;
     }
 
@@ -38,7 +45,7 @@ const downloadSVG = (
 
     const svgContent = `
         <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${bbox.x1} ${bbox.y1} ${width} ${height}">
-          ${svgPath}
+          <g fill="${color}">${svgPath}</g>
         </svg>
       `;
 

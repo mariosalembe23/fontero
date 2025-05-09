@@ -4,9 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import LeftPannel from "./components/Areas/LeftPannel";
 import CentralPannel from "./components/Areas/CentralPannel";
 import RightPannel from "./components/Areas/RightPannel";
-import { addFont } from "./Redux/slices/fontsSlice";
 import { useDispatch } from "react-redux";
-
+import loadDefaultFont from "./components/MainFunc/LoadDefaultFont";
 
 type TextProps = "off" | "on" | "none";
 
@@ -32,7 +31,7 @@ export default function Home() {
   const [selectedElement, setSelectedElement] = useState<TextArrProps | null>(
     null
   );
-
+  
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -44,7 +43,7 @@ export default function Home() {
         setShowPicker("off");
       }
     }
-
+    
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -52,17 +51,11 @@ export default function Home() {
   }, [showPicker]);
 
   useEffect(() => {
-    const handleAddText = () => {
-      dispatch(
-        addFont({
-          id: Date.now(),
-          fontFamily: "sans-serif",
-          fontData: "",
-        })
-      );
-    };
-
-    handleAddText();
+    loadDefaultFont({
+      fontFamily: "Roboto",
+      path: "/fonts/Roboto.ttf",
+      dispatch,
+    });
   }, [dispatch]);
 
   return (

@@ -48,7 +48,7 @@ export const FontPreview: React.FC = () => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         style={{
-          fontFamily: fontName || "sans-serif",
+          fontFamily: fontName || " Roboto",
           fontSize: 24,
           marginTop: 20,
           width: "100%",

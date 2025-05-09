@@ -45,7 +45,7 @@ const AddTextArea: React.FC<{
         id: id,
         text: text,
         size: data?.size || "16px",
-        fontFamily: data?.fontFamily || "sans-serif",
+        fontFamily: data?.fontFamily.trim() || "Roboto",
         color: data?.color || "#000000",
         weight: data?.weight || "400",
       })

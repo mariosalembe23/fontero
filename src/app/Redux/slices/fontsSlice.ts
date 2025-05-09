@@ -6,13 +6,7 @@ interface UploadFontsProps {
   fontData: string;
 }
 
-const initialState: UploadFontsProps[] = [
-  {
-    id: 0,
-    fontFamily: "sans-serif",
-    fontData: "",
-  },
-];
+const initialState: UploadFontsProps[] = [];
 
 const fontsSlice = createSlice({
   name: "fonts",

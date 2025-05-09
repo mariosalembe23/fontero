@@ -199,7 +199,8 @@ const RightPannel: React.FC<{
                 selectedElement?.text || "",
                 selectedElement?.fontFamily || "",
                 selectedElement?.size || "",
-                fonts
+                fonts,
+                selectedElement?.color || "",
               );
             }}
             disabled={!selectedElement}

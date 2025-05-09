@@ -46,7 +46,6 @@ const ItemText: React.FC<{
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    // Verifique se há mudanças reais antes de disparar o dispatch
     if (
       newColor !== color ||
       newFontFamily !== fontFamily ||
@@ -62,7 +61,7 @@ const ItemText: React.FC<{
             (font: UploadFontsProps) => font.fontFamily === newFontFamily
           )
             ? newFontFamily
-            : "sans-serif",
+            : "Roboto",
           size: newSize,
           weight: newWeight,
         })
@@ -148,7 +147,11 @@ const ItemText: React.FC<{
             className="text-[14px] outline-none w-full"
           >
             {fonts.map((font) => (
-              <option key={font.id} value={font.fontFamily}>
+              <option
+                key={font.id}
+                className="capitalize"
+                value={font.fontFamily}
+              >
                 {font.fontFamily}
               </option>
             ))}
