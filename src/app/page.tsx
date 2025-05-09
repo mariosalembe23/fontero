@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import LeftPannel from "./components/Areas/LeftPannel";
 import CentralPannel from "./components/Areas/CentralPannel";
 import RightPannel from "./components/Areas/RightPannel";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import loadDefaultFont from "./components/MainFunc/LoadDefaultFont";
-import { RootState } from "./Redux/store";
+// import { RootState } from "./Redux/store";
 
 type TextProps = "off" | "on" | "none";
 
@@ -21,9 +21,9 @@ interface TextArrProps {
 
 export default function Home() {
   const dispatch = useDispatch();
-  const texts = useSelector((state: RootState) => state.texts);
-  const fonts = useSelector((state: RootState) => state.fonts);
-  
+  // const texts = useSelector((state: RootState) => state.texts);
+  // const fonts = useSelector((state: RootState) => state.fonts);
+
   const [color, setColor] = useState<string>("#f5f5f5");
   const [showPicker, setShowPicker] = useState<string>("none");
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -34,7 +34,7 @@ export default function Home() {
   const [selectedElement, setSelectedElement] = useState<TextArrProps | null>(
     null
   );
-  
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -46,7 +46,7 @@ export default function Home() {
         setShowPicker("off");
       }
     }
-    
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -61,12 +61,22 @@ export default function Home() {
     });
   }, [dispatch]);
 
-
-  console.log("texts", texts);
-  console.log("fonts", fonts);
+  useEffect(() => {
+    document.documentElement.classList.toggle(
+      "dark",
+      localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
+    localStorage.theme = "light";
+    localStorage.theme = "dark";
+    localStorage.removeItem("theme");
+  }, []);
 
   return (
-    <div className="grid grid-cols-[15%_70%_15%] w-full h-screen">
+    <div className="grid pot:grid-cols-[20%_60%_20%] det:grid-cols-[15%_70%_15%] w-full h-screen">
+      <aside className="pot:hidden inline-flex fixed top-0 left-0 w-full h-screen bg-white"></aside>
+
       <LeftPannel
         buttonRef={buttonRef}
         color={color}

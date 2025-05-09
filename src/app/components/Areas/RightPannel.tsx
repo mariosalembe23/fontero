@@ -145,7 +145,7 @@ const RightPannel: React.FC<{
   };
 
   return (
-    <div className="border-l h-full flex items-start flex-col justify-between border-zinc-200 px-7 py-8">
+    <div className="border-l h-full flex items-start flex-col justify-between border-zinc-200 px-3 det:px-7 py-8">
       <header>
         <h2 className="font-medium text-zinc-900">Fontes</h2>
         <small className="text-zinc-500">
@@ -160,7 +160,7 @@ const RightPannel: React.FC<{
           accept=".ttf,.woff,.woff2,.otf"
           onChange={handleFontUpload}
         />
-        <div className="mt-4">
+        <div className="mt-2">
           <div className="grid grid-cols-1 gap-2 mb-4">
             {fonts.slice(1).map((font) => (
               <FontComponent

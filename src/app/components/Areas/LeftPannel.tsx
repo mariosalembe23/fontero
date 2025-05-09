@@ -228,15 +228,17 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
   return (
     <div className="border-r h-screen border-zinc-200 flex items-start flex-col justify-between py-8">
       <section className="w-full">
-        <header className="px-5 flex items-center justify-between">
-          <h2 className="font-semibold text-lg text-zinc-900">fontero</h2>
+        <header className="det:px-5 pot:px-3 flex items-center justify-between">
+          <h2 className="font-semibold text-lg text-zinc-900">
+            fontero
+          </h2>
           <div className="">
-            <button className="flex items-center text-blue-500 justify-center w-8 h-8 gap-2 rounded-full border border-blue-500 bg-white text-[14px]">
+            <button className="flex items-center text-blue-500 justify-center w-7 h-7 gap-2 rounded-full border border-blue-500 bg-white text-[14px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="icon size-6 icon-tabler icons-tabler-filled icon-tabler-bulb"
+                className="icon size-5 icon-tabler icons-tabler-filled icon-tabler-bulb"
               >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M4 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" />
@@ -250,7 +252,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
             </button>
           </div>
         </header>
-        <section className="border-t px-5 w-full border-zinc-200 mt-4 pt-4">
+        <section className="border-t det:px-5 pot:px-3 w-full border-zinc-200 mt-4 pt-4">
           <h2 className="text-zinc-700 font-medium text-[15px]">Página</h2>
           <div className="mt-3">
             <button
@@ -287,7 +289,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
           </div>
         </section>
       </section>
-      <section className="border-t pb-5 px-5 h-full overflow-y-auto w-full border-zinc-200 mt-7 pt-4">
+      <section className="border-t pb-5 det:px-5 px-3 h-full overflow-y-auto w-full border-zinc-200 mt-7 pt-4">
         <h2 className="text-zinc-700 font-medium text-[15px]">Designs</h2>
         {texts.length === 0 && (
           <p className="text-zinc-500 text-[13px] pe-4">
@@ -320,7 +322,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
           </footer>
         </div>
       </section>
-      <footer className="px-5 flex flex-col items-start">
+      <footer className="det:px-5 px-3 flex flex-col items-start">
         <div className="flex items-center justify-center gap-2">
           <Link
             href={"https://github.com/mariosalembe23"}
@@ -351,9 +353,9 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="icon size-5 icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -374,9 +376,9 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="icon size-5 icon-tabler icons-tabler-outline icon-tabler-brand-dribbble"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
