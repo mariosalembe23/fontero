@@ -1,18 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import "tippy.js/dist/tippy.css";
 import React, { useRef } from "react";
 import { toast, Toaster } from "sonner";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../Redux/store";
+import { addFont, removeFont } from "../../Redux/slices/fontsSlice";
 import downloadSVG from "../MainFunc/DownloadSVG";
 
 interface FontComponentProps {
   fontName: string | null;
   removeFont: (fontName: string | null) => void;
-}
-
-interface UploadFontsProps {
-  id: number;
-  fontFamily: string;
-  fontData: string;
 }
 
 interface TextArrProps {
@@ -29,8 +28,8 @@ const FontComponent: React.FC<FontComponentProps> = ({
   removeFont,
 }) => {
   return (
-    <div className="flex items-center w-full border border-zinc-300 ps-4  rounded-md justify-between gap-2">
-      <p className="text-[15px] text-zinc-800">{fontName}</p>
+    <div className="flex items-center w-full border border-zinc-300 ps-4 rounded-md justify-between gap-2">
+      <p className="text-[15px] capitalize text-zinc-800">{fontName}</p>
       <button
         type="button"
         onClick={() => removeFont(fontName)}
@@ -57,13 +56,13 @@ const FontComponent: React.FC<FontComponentProps> = ({
   );
 };
 
-const RightPannel: React.FC<{
-  fonts: UploadFontsProps[];
-  setFonts: React.Dispatch<React.SetStateAction<UploadFontsProps[]>>;
-  selectedElement: TextArrProps | null;
-  setTexts: React.Dispatch<React.SetStateAction<TextArrProps[]>>;
-  setSelectedElement: React.Dispatch<React.SetStateAction<TextArrProps | null>>;
-}> = ({ fonts, setFonts, setSelectedElement, selectedElement, setTexts }) => {
+const RightPannel: React.FC = () => {
+  const dispatch = useDispatch();
+  const fonts = useSelector((state: RootState) => state.fonts);
+  const selectedElement = useSelector(
+    (state: RootState) => state.selectedElement
+  ) as TextArrProps | null;
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFontUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +79,18 @@ const RightPannel: React.FC<{
       const rawName = file.name.replace(/\.[^/.]+$/, "");
       const safeName = rawName.replace(/\s+/g, "-");
 
+      const alreadyExists = fonts.some((f) => f.fontFamily === safeName);
+      if (alreadyExists) {
+        toast.error("Fonte já foi adicionada.", {
+          classNames: {
+            toast: "!text-red-600",
+          },
+        });
+        return;
+      }
+
       const style = document.createElement("style");
+      style.id = `font-${safeName}`;
       style.innerHTML = `
           @font-face {
             font-family: '${safeName}';
@@ -88,24 +98,24 @@ const RightPannel: React.FC<{
           }
         `;
       document.head.appendChild(style);
-      setFonts((prevFonts) => [
-        ...prevFonts,
-        {
+
+      dispatch(
+        addFont({
           id: Date.now(),
           fontFamily: safeName,
           fontData: fontData as string,
-        },
-      ]);
-      const alreadyExists = fonts.some((f) => f.fontFamily === safeName);
-      if (alreadyExists) {
-        toast.error("Fonte já foi adicionada.");
-        return;
-      }
+        })
+      );
 
-      toast.success(`Fonte ${safeName} adicionada com sucesso!`);
+      toast.success(`Fonte ${safeName} adicionada com sucesso!`, {
+        classNames: {
+          toast: "!text-blue-600",
+        },
+      });
     };
 
     reader.readAsDataURL(file);
+    e.target.value = "";
   };
 
   const handleFontClick = () => {
@@ -114,35 +124,27 @@ const RightPannel: React.FC<{
     }
   };
 
-  const removeFont = (fontName: string | null) => {
-    if (selectedElement?.fontFamily === fontName) {
-      setSelectedElement({
-        ...selectedElement,
-        fontFamily: "sans-serif",
-      });
+  const removeFontHandler = (fontName: string | null) => {
+    if (!fontName) return;
+
+    const styleElement = document.getElementById(`font-${fontName}`);
+    if (styleElement) {
+      styleElement.remove();
     }
 
-    setFonts(fonts.filter((font) => font.fontFamily !== fontName));
-    setTexts((prevTexts) => {
-      return prevTexts.map((text) => {
-        if (text.fontFamily === fontName) {
-          return {
-            ...text,
-            fontFamily: "sans-serif",
-            fontData: "",
-          };
-        }
-        return text;
-      });
-    });
+    dispatch(removeFont(fontName));
 
-    toast.success(`Fonte ${fontName} removida com sucesso!`);
+    toast.success(`Fonte ${fontName} removida com sucesso!`, {
+      classNames: {
+        toast: "!text-blue-600",
+      },
+    });
   };
 
   return (
     <div className="border-l h-full flex items-start flex-col justify-between border-zinc-200 px-7 py-8">
       <header>
-        <h2 className=" font-medium text-zinc-900">Fontes</h2>
+        <h2 className="font-medium text-zinc-900">Fontes</h2>
         <small className="text-zinc-500">
           Aqui estarão listadas todas as fontes que você adicionou ou padrões ao
           sistema.
@@ -159,7 +161,7 @@ const RightPannel: React.FC<{
           <div className="grid grid-cols-1 gap-2 mb-4">
             {fonts.slice(1).map((font) => (
               <FontComponent
-                removeFont={removeFont}
+                removeFont={removeFontHandler}
                 key={font.id}
                 fontName={font.fontFamily}
               />
@@ -188,7 +190,6 @@ const RightPannel: React.FC<{
             Adicionar fonte
           </button>
         </div>
-        <div></div>
       </header>
       <footer className="w-full flex flex-col">
         <div className="grid grid-cols-1 my-5 items-center justify-between">

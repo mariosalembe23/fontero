@@ -1,19 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../Redux/store";
+import { addText } from "../../Redux/slices/textsSlice";
+import { setSelectedElement } from "../../Redux/slices/selectedElementSlice";
 import PickerModal from "../PickerModal";
 import AddTextArea from "../micro/AddTextArea";
 
 type TextProps = "off" | "on" | "none";
-
-interface TextArrProps {
-  id: number;
-  text: string;
-  size: string;
-  fontFamily: string;
-  color: string;
-  weight: string;
-}
 
 interface CentralPannelProps {
   color: string;
@@ -24,9 +19,6 @@ interface CentralPannelProps {
   setAddText: React.Dispatch<React.SetStateAction<TextProps>>;
   showAddText: string;
   buttonRef: React.RefObject<HTMLButtonElement | null>;
-  texts: TextArrProps[];
-  setTexts: React.Dispatch<React.SetStateAction<TextArrProps[]>>;
-  setSelectedElement: React.Dispatch<React.SetStateAction<TextArrProps | null>>;
   spaceBetweenTexts: string;
 }
 
@@ -39,11 +31,11 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
   setAddText,
   showAddText,
   buttonRef,
-  texts,
-  setTexts,
-  setSelectedElement,
   spaceBetweenTexts,
 }) => {
+  const dispatch = useDispatch();
+  const texts = useSelector((state: RootState) => state.texts);
+
   const addTextRef = useRef<HTMLTextAreaElement | null>(null);
   const refBoxText = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -89,7 +81,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
       ) {
         setSelected(false);
         setIdSelected(null);
-        setSelectedElement(null);
+        dispatch(setSelectedElement(null));
       }
     }
 
@@ -97,14 +89,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [
-    refBoxText,
-    selected,
-    buttonRef,
-    setSelected,
-    setIdSelected,
-    setSelectedElement,
-  ]);
+  }, [refBoxText, selected, buttonRef, dispatch]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -159,16 +144,16 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
   };
 
   const addNewText = (text: string) => {
-    const newText = {
-      id: texts.length > 0 ? texts[texts.length - 1].id + 1 : 1,
-      text: text,
-      size: "16",
-      fontFamily: "sans-serif",
-      color: "#000000",
-      weight: "400",
-    };
-
-    setTexts((prevTexts) => [...prevTexts, newText]);
+    dispatch(
+      addText({
+        id: Date.now(),
+        text: text,
+        size: "16",
+        fontFamily: "sans-serif",
+        color: "#000000",
+        weight: "400",
+      })
+    );
     setAddText("off");
   };
 
@@ -212,10 +197,11 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
           }}
           className="relative w-full h-full flex flex-col items-center justify-center"
         >
-          {texts.map((text, index) => (
+          {texts.map((text) => (
             <div
+              id={`text-${text.id}`}
               ref={refBoxText}
-              key={index + '-' + text.fontFamily}
+              key={text.id}
               style={{
                 fontSize: `${parseInt(text.size)}px`,
                 fontFamily: text.fontFamily,
@@ -230,7 +216,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
               onClick={() => {
                 setSelected(true);
                 setIdSelected(text.id);
-                setSelectedElement(text);
+                dispatch(setSelectedElement(text));
               }}
             >
               {text.text}

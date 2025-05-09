@@ -1,48 +1,27 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "./Redux/store";
 import LeftPannel from "./components/Areas/LeftPannel";
 import CentralPannel from "./components/Areas/CentralPannel";
 import RightPannel from "./components/Areas/RightPannel";
+import { addFont } from "./Redux/slices/fontsSlice";
 
 type TextProps = "off" | "on" | "none";
 
-interface TextArrProps {
-  id: number;
-  text: string;
-  size: string;
-  fontFamily: string;
-  color: string;
-  weight: string;
-}
-
-interface UploadFontsProps {
-  id: number;
-  fontFamily: string;
-  fontData: string;
-}
-
 export default function Home() {
+  const dispatch = useDispatch();
+  const texts = useSelector((state: RootState) => state.texts);
+  const fonts = useSelector((state: RootState) => state.fonts);
+
   const [color, setColor] = useState<string>("#f5f5f5");
   const [showPicker, setShowPicker] = useState<string>("none");
   const pickerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [showAddText, setShowAddText] = useState<TextProps>("none");
   const buttonRefAddText = useRef<HTMLButtonElement>(null);
-  const [texts, setTexts] = useState<TextArrProps[]>([]);
-  const [importedFonts, setImportedFonts] = useState<UploadFontsProps[]>([
-    {
-      id: 0,
-      fontFamily: "sans-serif",
-      fontData: "",
-    },
-  ]);
-  const [selectedElement, setSelectedElement] = useState<TextArrProps | null>(
-    null
-  );
   const [spaceBetweenTexts, setSpaceBetweenTexts] = useState<string>("0");
-
-  console.log("Texts", texts);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -62,6 +41,23 @@ export default function Home() {
     };
   }, [showPicker]);
 
+  useEffect(() => {
+    const handleAddText = () => {
+      dispatch(
+        addFont({
+          id: Date.now(),
+          fontFamily: "sans-serif",
+          fontData: "",
+        })
+      );
+    };
+
+    handleAddText();
+  }, [dispatch]);
+
+  console.log("texts", texts);
+  console.log("fonts", fonts);
+
   return (
     <div className="grid grid-cols-[15%_70%_15%] w-full h-screen">
       <LeftPannel
@@ -72,9 +68,6 @@ export default function Home() {
         setAddText={setShowAddText}
         showAddText={showAddText}
         buttonRefAddText={buttonRefAddText}
-        texts={texts}
-        setTexts={setTexts}
-        fonts={importedFonts}
         spaceBetweenTexts={spaceBetweenTexts}
         setSpaceBetweenTexts={setSpaceBetweenTexts}
       />
@@ -87,18 +80,9 @@ export default function Home() {
         setAddText={setShowAddText}
         showAddText={showAddText}
         buttonRef={buttonRefAddText}
-        texts={texts}
-        setTexts={setTexts}
-        setSelectedElement={setSelectedElement}
         spaceBetweenTexts={spaceBetweenTexts}
       />
-      <RightPannel
-        fonts={importedFonts}
-        setFonts={setImportedFonts}
-        selectedElement={selectedElement}
-        setTexts={setTexts}
-        setSelectedElement={setSelectedElement}
-      />
+      <RightPannel />
     </div>
   );
 }
