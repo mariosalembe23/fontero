@@ -9,6 +9,11 @@ interface TextArrProps {
   weight: string;
 }
 
+interface UpdateTextsFontPayload {
+  oldFont: string;
+  newFont: string;
+}
+
 const initialState: TextArrProps[] = [];
 
 const textsSlice = createSlice({
@@ -16,8 +21,15 @@ const textsSlice = createSlice({
   initialState,
   reducers: {
     addText: (state, action: PayloadAction<TextArrProps>) => {
-      
       state.push(action.payload);
+    },
+    updateTextsFont: (state, action: PayloadAction<UpdateTextsFontPayload>) => {
+      const { oldFont, newFont } = action.payload;
+      state.forEach((text) => {
+        if (text.fontFamily === oldFont) {
+          text.fontFamily = newFont;
+        }
+      });
     },
     updateText: (state, action: PayloadAction<TextArrProps>) => {
       const index = state.findIndex((text) => text.id === action.payload.id);
@@ -33,5 +45,5 @@ const textsSlice = createSlice({
   },
 });
 
-export const { addText, updateText, removeText } = textsSlice.actions;
+export const { addText, updateText, removeText, updateTextsFont } = textsSlice.actions;
 export default textsSlice.reducer;

@@ -4,8 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import LeftPannel from "./components/Areas/LeftPannel";
 import CentralPannel from "./components/Areas/CentralPannel";
 import RightPannel from "./components/Areas/RightPannel";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import loadDefaultFont from "./components/MainFunc/LoadDefaultFont";
+import { RootState } from "./Redux/store";
 
 type TextProps = "off" | "on" | "none";
 
@@ -20,6 +21,8 @@ interface TextArrProps {
 
 export default function Home() {
   const dispatch = useDispatch();
+  const texts = useSelector((state: RootState) => state.texts);
+  const fonts = useSelector((state: RootState) => state.fonts);
   
   const [color, setColor] = useState<string>("#f5f5f5");
   const [showPicker, setShowPicker] = useState<string>("none");
@@ -57,6 +60,10 @@ export default function Home() {
       dispatch,
     });
   }, [dispatch]);
+
+
+  console.log("texts", texts);
+  console.log("fonts", fonts);
 
   return (
     <div className="grid grid-cols-[15%_70%_15%] w-full h-screen">

@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { addFont, removeFont } from "../../Redux/slices/fontsSlice";
 import downloadSVG from "../MainFunc/DownloadSVG";
+import { updateTextsFont } from "@/app/Redux/slices/textsSlice";
 
 interface FontComponentProps {
   fontName: string | null;
@@ -83,7 +84,7 @@ const RightPannel: React.FC<{
       if (alreadyExists) {
         toast.error("Fonte já foi adicionada.", {
           classNames: {
-            toast: "!text-red-600",
+            toast: "!text-red-700",
           },
         });
         return;
@@ -109,7 +110,7 @@ const RightPannel: React.FC<{
 
       toast.success(`Fonte ${safeName} adicionada com sucesso!`, {
         classNames: {
-          toast: "!text-blue-600",
+          toast: "!text-blue-700",
         },
       });
     };
@@ -134,9 +135,11 @@ const RightPannel: React.FC<{
 
     dispatch(removeFont(fontName));
 
+    dispatch(updateTextsFont({ oldFont: fontName, newFont: "Roboto" }));
+
     toast.success(`Fonte ${fontName} removida com sucesso!`, {
       classNames: {
-        toast: "!text-blue-600",
+        toast: "!text-blue-700",
       },
     });
   };
@@ -200,7 +203,7 @@ const RightPannel: React.FC<{
                 selectedElement?.fontFamily || "",
                 selectedElement?.size || "",
                 fonts,
-                selectedElement?.color || "",
+                selectedElement?.color || ""
               );
             }}
             disabled={!selectedElement}
