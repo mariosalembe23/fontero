@@ -7,6 +7,7 @@ import { addText } from "../../Redux/slices/textsSlice";
 import PickerModal from "../PickerModal";
 import AddTextArea from "../micro/AddTextArea";
 import { ThemeContext } from "../MainFunc/ThemeProvider";
+import { toast } from "sonner";
 
 type TextProps = "off" | "on" | "none";
 
@@ -162,6 +163,13 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
   const { theme } = useContext(ThemeContext)!;
 
   const addNewText = (text: string) => {
+    if (texts.length >= 5)
+      return toast.error("Máximo de 5 textos atingido.", {
+        classNames: {
+          toast: "!text-red-700",
+        },
+      });
+
     dispatch(
       addText({
         id: Date.now(),

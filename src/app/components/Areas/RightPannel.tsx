@@ -72,6 +72,15 @@ const RightPannel: React.FC<{
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (fonts.length >= 6) {
+      toast.error("Limite de fontes atingido.", {
+        classNames: {
+          toast: "!text-red-700",
+        },
+      });
+      return;
+    }
+
     const reader = new FileReader();
 
     reader.onload = function (event) {
