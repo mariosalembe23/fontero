@@ -29,12 +29,14 @@ const FontComponent: React.FC<FontComponentProps> = ({
   removeFont,
 }) => {
   return (
-    <div className="flex items-center w-full border border-zinc-300 ps-4 rounded-md justify-between gap-2">
-      <p className="text-[15px] capitalize text-zinc-800">{fontName}</p>
+    <div className="flex items-center w-full border dark:border-zinc-700 border-zinc-300 ps-4 rounded-md justify-between gap-2">
+      <p className="text-[15px] truncate capitalize dark:text-white text-zinc-800">
+        {fontName}
+      </p>
       <button
         type="button"
         onClick={() => removeFont(fontName)}
-        className="text-red-400 border-l border-zinc-300 transition-all hover:text-red-500 cursor-pointer hover:bg-red-400/40 rounded-r-md py-2 px-2 flex items-center justify-center"
+        className="text-red-400 border-l dark:border-zinc-700 border-zinc-300 transition-all hover:text-red-500 cursor-pointer hover:bg-red-400/40 rounded-r-md py-2 px-2 flex items-center justify-center"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -145,10 +147,10 @@ const RightPannel: React.FC<{
   };
 
   return (
-    <div className="border-l h-full flex items-start flex-col justify-between border-zinc-200 px-3 det:px-7 py-8">
+    <div className="border-l h-full flex items-start bg-white dark:bg-zinc-900 flex-col justify-between dark:border-zinc-800 border-zinc-200 px-3 det:px-5 py-8">
       <header>
-        <h2 className="font-medium text-zinc-900">Fontes</h2>
-        <small className="text-zinc-500">
+        <h2 className="font-medium text-zinc-900 dark:text-zinc-100">Fontes</h2>
+        <small className="text-zinc-500 dark:text-zinc-400">
           Aqui estarão listadas todas as fontes que você adicionou ou padrões ao
           sistema.
         </small>
@@ -174,22 +176,24 @@ const RightPannel: React.FC<{
             onClick={handleFontClick}
             className="w-full transition-all hover:bg-blue-600 cursor-pointer bg-blue-500 py-2 gap-2 text-[15px] text-white rounded-lg flex items-center justify-center"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="icon size-5 icon-tabler icons-tabler-outline icon-tabler-typeface"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
-              <path d="M17 17a2 2 0 0 1 -2 -2v-8h-5a2 2 0 0 0 -2 2" />
-              <path d="M7 17a2.775 2.775 0 0 0 2.632 -1.897l.368 -1.103a13.4 13.4 0 0 1 3.236 -5.236l1.764 -1.764" />
-              <path d="M10 14h5" />
-            </svg>
+            <span className="det:inline-flex hidden">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="icon size-5 icon-tabler icons-tabler-outline icon-tabler-typeface"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                <path d="M17 17a2 2 0 0 1 -2 -2v-8h-5a2 2 0 0 0 -2 2" />
+                <path d="M7 17a2.775 2.775 0 0 0 2.632 -1.897l.368 -1.103a13.4 13.4 0 0 1 3.236 -5.236l1.764 -1.764" />
+                <path d="M10 14h5" />
+              </svg>
+            </span>
             Adicionar fonte
           </button>
         </div>
@@ -229,7 +233,7 @@ const RightPannel: React.FC<{
         </div>
         <Link
           href={"/"}
-          className="flex text-[15px] transition-all hover:text-black text-zinc-600 items-center justify-between w-full"
+          className="flex text-[15px] dark:text-zinc-200 dark:hover:text-zinc-400 transition-all hover:text-black text-zinc-600 items-center justify-between w-full"
         >
           Suporte
           <span>

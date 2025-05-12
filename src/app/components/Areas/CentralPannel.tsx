@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { addText } from "../../Redux/slices/textsSlice";
 import PickerModal from "../PickerModal";
 import AddTextArea from "../micro/AddTextArea";
+import { ThemeContext } from "../MainFunc/ThemeProvider";
 
 type TextProps = "off" | "on" | "none";
 
@@ -158,6 +159,8 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
     setIsDragging(false);
   };
 
+  const { theme } = useContext(ThemeContext)!;
+
   const addNewText = (text: string) => {
     dispatch(
       addText({
@@ -165,7 +168,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
         text: text,
         size: "16",
         fontFamily: "Roboto",
-        color: "#000000",
+        color: theme === "dark" ? "#ffffff" : "#000000",
         weight: "400",
       })
     );
@@ -229,7 +232,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
               }}
               className={`select-none cursor-pointer relative py-1 px-3 ${
                 selected && idSelected === text.id
-                  ? "border border-zinc-200 rounded-lg"
+                  ? "border border-blue-400 rounded-lg"
                   : ""
               }`}
               onClick={() => {
@@ -246,7 +249,7 @@ const CentralPannel: React.FC<CentralPannelProps> = ({
                     setEditMode(true);
                     setAddText("on");
                   }}
-                  className="absolute ignore-click text-[13px] font-['Inter'] font-normal -top-5 -right-16 transition-all hover:opacity-90 text-white border bg-blue-500 rounded-lg py-1 px-2"
+                  className="absolute cursor-pointer ignore-click text-[13px] font-['Inter'] font-normal -top-5 -right-16 transition-all hover:opacity-90 text-white border bg-blue-500 rounded-lg py-1 px-2"
                 >
                   Editar texto
                 </button>

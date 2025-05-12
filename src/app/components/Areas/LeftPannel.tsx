@@ -17,6 +17,15 @@ interface UploadFontsProps {
   fontData: string;
 }
 
+interface TextArrProps {
+  id: number;
+  text: string;
+  size: string;
+  fontFamily: string;
+  color: string;
+  weight: string;
+}
+
 interface LeftPannelProps {
   color: string;
   showPicker: string;
@@ -27,6 +36,7 @@ interface LeftPannelProps {
   buttonRefAddText: React.RefObject<HTMLButtonElement | null>;
   spaceBetweenTexts: string;
   setSpaceBetweenTexts: React.Dispatch<React.SetStateAction<string>>;
+  selectedElement: TextArrProps | null;
 }
 
 const ItemText: React.FC<{
@@ -37,7 +47,8 @@ const ItemText: React.FC<{
   color: string;
   weight: string;
   fonts: UploadFontsProps[];
-}> = ({ id, text, color, fontFamily, size, weight, fonts }) => {
+  isSelected: boolean;
+}> = ({ id, text, color, fontFamily, size, weight, fonts, isSelected }) => {
   const dispatch = useDispatch();
   const [newColor, setNewColor] = React.useState<string>(color);
   const [newFontFamily, setNewFontFamily] = React.useState<string>(fontFamily);
@@ -107,7 +118,11 @@ const ItemText: React.FC<{
   }, [showPicker]);
 
   return (
-    <div className="w-full cursor-pointer px-3 border-zinc-200 bg-gray-50 rounded-lg border transition-all py-2">
+    <div
+      className={`w-full cursor-pointer px-3 ${
+        isSelected && "!border-blue-500"
+      } border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800 bg-gray-50 rounded-lg border transition-all py-2`}
+    >
       <PickerModal
         ref={refAddColor}
         showPicker={showPicker}
@@ -118,10 +133,12 @@ const ItemText: React.FC<{
 
       <div className="flex items-center justify-between">
         <div className="w-[70%] truncate ps-1 text-start">
-          <p className="truncate text-zinc-600 text-[15px]">{text}</p>
+          <p className="truncate dark:text-zinc-200 text-zinc-600 text-[15px]">
+            {text}
+          </p>
         </div>
         <div className="flex items-center justify-center">
-          <button className="text-zinc-400 cursor-pointer transition-all hover:text-zinc-700">
+          <button className="text-zinc-400 dark:text-white cursor-pointer transition-all hover:text-zinc-700">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -139,14 +156,14 @@ const ItemText: React.FC<{
           </button>
         </div>
       </div>
-      <footer className="border-t border-zinc-200 mt-2">
-        <div className="border mt-2 px-2 py-1 rounded-md border-zinc-200">
+      <footer className="border-t dark:border-zinc-800 border-zinc-200 mt-2">
+        <div className="border mt-2 px-2 py-1 dark:border-zinc-800 text-black dark:text-white rounded-md border-zinc-200">
           <select
             name="font"
             id="font"
             value={newFontFamily}
             onChange={(e) => setNewFontFamily(e.target.value)}
-            className="text-[14px] outline-none w-full"
+            className="text-[14px] outline-none bg-white dark:bg-zinc-900 w-full"
           >
             {fonts.map((font) => (
               <option
@@ -161,20 +178,20 @@ const ItemText: React.FC<{
         </div>
         <div className="grid grid-cols-2 gap-2 mt-2">
           <input
-            className="border outline-none py-1 border-zinc-200 text-[14px] px-2 rounded-md"
+            className="border outline-none py-1 dark:border-zinc-800 dark:text-white text-black border-zinc-200 text-[14px] px-2 rounded-md"
             type="text"
             name="size"
             id="size"
             value={newSize}
             onChange={(e) => setNewSize(e.target.value)}
           />
-          <div className="border px-3 py-1 rounded-md border-zinc-200">
+          <div className="border px-3 py-1 rounded-md dark:border-zinc-800 text-black dark:text-white border-zinc-200">
             <select
               name="font"
               id="font"
               value={newWeight}
               onChange={(e) => setNewWeight(e.target.value)}
-              className="text-[14px] outline-none w-full"
+              className="text-[14px] bg-white dark:bg-zinc-900 outline-none w-full"
             >
               <option value="100">Thin</option>
               <option value="200">Extra Light</option>
@@ -187,22 +204,24 @@ const ItemText: React.FC<{
               <option value="900">Black</option>
             </select>
           </div>
-          <div className="border flex items-center gap-1 px-1 py-1 rounded-md border-zinc-200">
+          <div className="border col-span-full flex items-center gap-2 px-2 py-1.5 rounded-md dark:border-zinc-800 border-zinc-200">
             <button
               ref={buttonRef}
               onClick={() => showPicker !== "on" && setShowPicker("on")}
               style={{
                 backgroundColor: newColor,
               }}
-              className="w-5 h-5 border border-zinc-300 rounded-sm"
+              className="w-5 h-5 border dark:border-zinc-600 border-zinc-300 rounded-sm"
             ></button>
-            <p className="uppercase text-[13px] text-zinc-700">{newColor}</p>
+            <p className="uppercase text-[13px] dark:text-white text-zinc-700">
+              {newColor}
+            </p>
           </div>
-          <div>
+          <div className="col-span-full">
             <button
               onClick={handleDelete}
               type="button"
-              className="text-[13px] border cursor-pointer bg-red-400/30 border-red-300 transition-all hover:bg-red-400/50 text-red-500 font-medium py-1 w-full rounded-md"
+              className="text-[13px] border cursor-pointer dark:text-white bg-red-400/30 border-red-300 transition-all hover:bg-red-400/50 text-red-500 font-medium py-1 w-full rounded-md"
             >
               Deletar
             </button>
@@ -222,6 +241,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
   buttonRefAddText,
   spaceBetweenTexts,
   setSpaceBetweenTexts,
+  selectedElement,
 }) => {
   const texts = useSelector((state: RootState) => state.texts);
   const fonts = useSelector((state: RootState) => state.fonts);
@@ -232,7 +252,15 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
       <section className="w-full">
         <header className="det:px-5 pot:px-3 flex items-center justify-between">
           <h2 className="font-semibold text-lg dark:text-white text-zinc-900">
-            fontero
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="7.99497802734375 23.9994189453125 321 57"
+              className="w-24"
+            >
+              <g fill="currentColor">
+                <path d="M23.998 79.999L23.998 47.989L35.995 47.989L35.995 40.003L23.998 40.003L23.998 31.983L40.005 31.983L40.005 23.999L19.988 23.999L15.978 27.976L15.978 40.006L7.995 40.006L7.995 47.992L15.978 47.992L15.978 79.999ZM83.995 79.999L88.005 76.023L88.005 43.979L83.995 40.003L59.968 40.003L55.995 43.979L55.995 76.023L59.968 79.999ZM63.978 72.016L63.978 47.992L79.985 47.992L79.985 72.016ZM103.995 80.002L111.978 80.002L111.978 47.992L127.985 47.992L127.985 79.999L136.005 79.999L136.005 43.979L131.995 40.003L107.968 40.003L103.995 43.979ZM165.993 79.996L182 79.996L182 72.013L170.003 72.013L170.003 47.989L182 47.989L182 40.003L170.003 40.003L170.003 23.999L161.983 23.999L161.983 40.006L154 40.006L154 47.992L161.983 47.992L161.983 76.023L165.993 79.999ZM232.005 79.999L232.005 72.016L207.978 72.016L207.978 63.996L227.995 63.996L232.005 60.020L232.005 43.979L227.995 40.003L203.968 40.003L199.995 43.979L199.995 76.023L203.968 79.999ZM207.978 56.009L207.978 47.989L223.985 47.989L223.985 56.009ZM257.983 79.999L257.983 47.989L269.980 47.989L269.980 56.009L278 56.009L278 40.003L253.973 40.003L250 43.979L250 79.999ZM323.995 79.999L328.005 76.023L328.005 43.979L323.995 40.003L299.968 40.003L295.995 43.979L295.995 76.023L299.968 79.999ZM303.978 72.016L303.978 47.992L319.985 47.992L319.985 72.016Z" />
+              </g>
+            </svg>
           </h2>
           <div className="">
             <button
@@ -271,7 +299,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
                 style={{
                   backgroundColor: color,
                 }}
-                className="w-5 h-5 border border-zinc-300 rounded-sm"
+                className="w-5 h-5 border dark:border-zinc-600 border-zinc-300 rounded-sm"
               ></div>
               <p className="uppercase text-[13px] dark:text-white text-zinc-700">
                 {color}
@@ -319,6 +347,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
                 color={text.color}
                 weight={text.weight}
                 fonts={fonts}
+                isSelected={selectedElement?.id === text.id ? true : false}
               />
             ))}
           </header>

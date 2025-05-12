@@ -1,12 +1,19 @@
 "use client";
 
-import React, { createContext, useLayoutEffect, useState } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 
 type Theme = "light" | "dark";
 
 interface ThemeContextProps {
   theme: Theme;
   toggleTheme: () => void;
+  isLoading: boolean;
+  isRestricted: boolean;
 }
 
 export const ThemeContext = createContext<ThemeContextProps | undefined>(
@@ -17,6 +24,32 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [theme, setTheme] = useState<Theme>("light");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRestricted, setIsRestricted] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+
+      if (width < 900) {
+        setIsRestricted(true);
+      } else {
+        setIsRestricted(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isRestricted) setIsLoading(false);
+  }, [isRestricted]);
 
   useLayoutEffect(() => {
     const storedTheme = localStorage.getItem("theme") as Theme | null;
@@ -33,6 +66,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       document.documentElement.classList.remove("dark");
     }
+
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
   }, []);
 
   const toggleTheme = () => {
@@ -48,7 +87,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider
+      value={{ theme, toggleTheme, isLoading, isRestricted }}
+    >
       {children}
     </ThemeContext.Provider>
   );

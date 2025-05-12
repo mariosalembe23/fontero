@@ -78,19 +78,19 @@ const AddTextArea: React.FC<{
         showAddText !== "on" &&
         showAddText !== "off" &&
         "translate-y-[200%]"
-      }  bottom-5 p-3 left-1/2 -translate-x-1/2 bg-white gap-2 flex flex-col border border-zinc-200 rounded-xl shadow-md w-[23%]`}
+      }  bottom-5 p-3 left-1/2 -translate-x-1/2 dark:bg-zinc-900 dark:border-zinc-800 bg-white gap-2 flex flex-col border border-zinc-200 rounded-xl shadow-md w-[23%]`}
     >
       <div className="flex ignore-click items-center justify-between">
         <label
           htmlFor="new_text"
-          className="text-[14px] font-medium text-zinc-700"
+          className="text-[14px] font-medium dark:text-zinc-100 text-zinc-700"
         >
           {editMode ? "Editae seu texto" : "Adicionar novo texto"}
         </label>
       </div>
       <textarea
         placeholder="Escreva um texto..."
-        className="border-zinc-300 ignore-click focus:border-blue-500 text-[15px] outline-none border rounded-md resize-none p-3"
+        className="border-zinc-300 dark:border-zinc-800 dark:text-white ignore-click focus:border-blue-500 text-[15px] outline-none border rounded-md resize-none p-3"
         name="new_text"
         id="new_text"
         value={text}

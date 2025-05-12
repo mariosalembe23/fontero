@@ -101,3 +101,13 @@ body {
     transform: translateY(-200%);
   }
 }
+
+.personalBack {
+  background-image: radial-gradient(#89b2e7 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.personalBackAside {
+  background-image: radial-gradient(#2c2c2e 1px, transparent 1px);
+  background-size: 20px 20px;
+}
