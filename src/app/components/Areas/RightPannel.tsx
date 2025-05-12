@@ -232,7 +232,8 @@ const RightPannel: React.FC<{
           </button>
         </div>
         <Link
-          href={"/"}
+          href={"https://www.linkedin.com/in/m%C3%A1rio-salembe-5211792a6/"}
+          target="_blank"
           className="flex text-[15px] dark:text-zinc-200 dark:hover:text-zinc-400 transition-all hover:text-black text-zinc-600 items-center justify-between w-full"
         >
           Suporte

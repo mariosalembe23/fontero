@@ -1,21 +1,14 @@
 "use client";
 
-import React, { useContext, useEffect } from "react";
-import PickerModal from "../PickerModal";
+import React, { useContext } from "react";
 import "tippy.js/dist/tippy.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
-import { updateText, removeText } from "../../Redux/slices/textsSlice";
 import Link from "next/link";
 import { ThemeContext } from "../MainFunc/ThemeProvider";
+import ItemText from "../micro/ItemText";
 
 type TextProps = "off" | "on" | "none";
-
-interface UploadFontsProps {
-  id: number;
-  fontFamily: string;
-  fontData: string;
-}
 
 interface TextArrProps {
   id: number;
@@ -39,199 +32,6 @@ interface LeftPannelProps {
   selectedElement: TextArrProps | null;
 }
 
-const ItemText: React.FC<{
-  id: number;
-  text: string;
-  size: string;
-  fontFamily: string;
-  color: string;
-  weight: string;
-  fonts: UploadFontsProps[];
-  isSelected: boolean;
-}> = ({ id, text, color, fontFamily, size, weight, fonts, isSelected }) => {
-  const dispatch = useDispatch();
-  const [newColor, setNewColor] = React.useState<string>(color);
-  const [newFontFamily, setNewFontFamily] = React.useState<string>(fontFamily);
-  const [newSize, setNewSize] = React.useState<string>(size);
-  const [newWeight, setNewWeight] = React.useState<string>(weight);
-  const [showPicker, setShowPicker] = React.useState<string>("none");
-  const refAddColor = React.useRef<HTMLDivElement | null>(null);
-  const buttonRef = React.useRef<HTMLButtonElement | null>(null);
-
-  useEffect(() => {
-    if (
-      newColor !== color ||
-      newFontFamily !== fontFamily ||
-      newSize !== size ||
-      newWeight !== weight
-    ) {
-      dispatch(
-        updateText({
-          id,
-          text,
-          color: newColor,
-          fontFamily: fonts.some(
-            (font: UploadFontsProps) => font.fontFamily === newFontFamily
-          )
-            ? newFontFamily
-            : "Roboto",
-          size: newSize,
-          weight: newWeight,
-        })
-      );
-    }
-  }, [
-    newColor,
-    newFontFamily,
-    newSize,
-    newWeight,
-    color,
-    fontFamily,
-    size,
-    weight,
-    id,
-    text,
-    fonts,
-    dispatch,
-  ]);
-
-  const handleDelete = () => {
-    dispatch(removeText(id));
-  };
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        refAddColor.current &&
-        !refAddColor.current.contains(event.target as Node) &&
-        !buttonRef.current?.contains(event.target as Node) &&
-        showPicker === "on"
-      ) {
-        setShowPicker("off");
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showPicker]);
-
-  return (
-    <div
-      className={`w-full cursor-pointer px-3 ${
-        isSelected && "!border-blue-500"
-      } border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800 bg-gray-50 rounded-lg border transition-all py-2`}
-    >
-      <PickerModal
-        ref={refAddColor}
-        showPicker={showPicker}
-        setShowPicker={setShowPicker}
-        color={newColor}
-        setColor={setNewColor}
-      />
-
-      <div className="flex items-center justify-between">
-        <div className="w-[70%] truncate ps-1 text-start">
-          <p className="truncate dark:text-zinc-200 text-zinc-600 text-[15px]">
-            {text}
-          </p>
-        </div>
-        <div className="flex items-center justify-center">
-          <button className="text-zinc-400 dark:text-white cursor-pointer transition-all hover:text-zinc-700">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="icon size-5 icon-tabler icons-tabler-outline icon-tabler-eye"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-              <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
-            </svg>
-          </button>
-        </div>
-      </div>
-      <footer className="border-t dark:border-zinc-800 border-zinc-200 mt-2">
-        <div className="border mt-2 px-2 py-1 dark:border-zinc-800 text-black dark:text-white rounded-md border-zinc-200">
-          <select
-            name="font"
-            id="font"
-            value={newFontFamily}
-            onChange={(e) => setNewFontFamily(e.target.value)}
-            className="text-[14px] outline-none bg-white dark:bg-zinc-900 w-full"
-          >
-            {fonts.map((font) => (
-              <option
-                key={font.id}
-                className="capitalize"
-                value={font.fontFamily}
-              >
-                {font.fontFamily}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          <input
-            className="border outline-none py-1 dark:border-zinc-800 dark:text-white text-black border-zinc-200 text-[14px] px-2 rounded-md"
-            type="text"
-            name="size"
-            id="size"
-            value={newSize}
-            onChange={(e) => setNewSize(e.target.value)}
-          />
-          <div className="border px-3 py-1 rounded-md dark:border-zinc-800 text-black dark:text-white border-zinc-200">
-            <select
-              name="font"
-              id="font"
-              value={newWeight}
-              onChange={(e) => setNewWeight(e.target.value)}
-              className="text-[14px] bg-white dark:bg-zinc-900 outline-none w-full"
-            >
-              <option value="100">Thin</option>
-              <option value="200">Extra Light</option>
-              <option value="300">Light</option>
-              <option value="400">Regular</option>
-              <option value="500">Medium</option>
-              <option value="600">Semi Bold</option>
-              <option value="700">Bold</option>
-              <option value="800">Extra Bold</option>
-              <option value="900">Black</option>
-            </select>
-          </div>
-          <div className="border col-span-full flex items-center gap-2 px-2 py-1.5 rounded-md dark:border-zinc-800 border-zinc-200">
-            <button
-              ref={buttonRef}
-              onClick={() => showPicker !== "on" && setShowPicker("on")}
-              style={{
-                backgroundColor: newColor,
-              }}
-              className="w-5 h-5 border dark:border-zinc-600 border-zinc-300 rounded-sm"
-            ></button>
-            <p className="uppercase text-[13px] dark:text-white text-zinc-700">
-              {newColor}
-            </p>
-          </div>
-          <div className="col-span-full">
-            <button
-              onClick={handleDelete}
-              type="button"
-              className="text-[13px] border cursor-pointer dark:text-white bg-red-400/30 border-red-300 transition-all hover:bg-red-400/50 text-red-500 font-medium py-1 w-full rounded-md"
-            >
-              Deletar
-            </button>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-};
-
 const LeftPannel: React.FC<LeftPannelProps> = ({
   color,
   showPicker,
@@ -251,16 +51,19 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
     <div className="border-r h-screen bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 flex items-start flex-col justify-between py-8">
       <section className="w-full">
         <header className="det:px-5 pot:px-3 flex items-center justify-between">
-          <h2 className="font-semibold text-lg dark:text-white text-zinc-900">
+          <h2 className="font-semibold flex items-center gap-2 text-lg dark:text-white text-zinc-900">
             <svg
+              viewBox="0 0 62 57 "
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="7.99497802734375 23.9994189453125 321 57"
-              className="w-24"
+              className="w-6 text-blue-500"
             >
-              <g fill="currentColor">
-                <path d="M23.998 79.999L23.998 47.989L35.995 47.989L35.995 40.003L23.998 40.003L23.998 31.983L40.005 31.983L40.005 23.999L19.988 23.999L15.978 27.976L15.978 40.006L7.995 40.006L7.995 47.992L15.978 47.992L15.978 79.999ZM83.995 79.999L88.005 76.023L88.005 43.979L83.995 40.003L59.968 40.003L55.995 43.979L55.995 76.023L59.968 79.999ZM63.978 72.016L63.978 47.992L79.985 47.992L79.985 72.016ZM103.995 80.002L111.978 80.002L111.978 47.992L127.985 47.992L127.985 79.999L136.005 79.999L136.005 43.979L131.995 40.003L107.968 40.003L103.995 43.979ZM165.993 79.996L182 79.996L182 72.013L170.003 72.013L170.003 47.989L182 47.989L182 40.003L170.003 40.003L170.003 23.999L161.983 23.999L161.983 40.006L154 40.006L154 47.992L161.983 47.992L161.983 76.023L165.993 79.999ZM232.005 79.999L232.005 72.016L207.978 72.016L207.978 63.996L227.995 63.996L232.005 60.020L232.005 43.979L227.995 40.003L203.968 40.003L199.995 43.979L199.995 76.023L203.968 79.999ZM207.978 56.009L207.978 47.989L223.985 47.989L223.985 56.009ZM257.983 79.999L257.983 47.989L269.980 47.989L269.980 56.009L278 56.009L278 40.003L253.973 40.003L250 43.979L250 79.999ZM323.995 79.999L328.005 76.023L328.005 43.979L323.995 40.003L299.968 40.003L295.995 43.979L295.995 76.023L299.968 79.999ZM303.978 72.016L303.978 47.992L319.985 47.992L319.985 72.016Z" />
-              </g>
+              <path
+                d="M52 0C57.5228 8.37535e-07 62 4.47715 62 10V47C62 52.5228 57.5228 57 52 57H10C4.47715 57 4.02673e-08 52.5228 0 47V10C0 4.47715 4.47715 0 10 0H52ZM10.75 13.3721V20.5479H6V25.3115H10.75V44.4033H15.5225V25.3096H22.6602V20.5459H15.5225V15.7627H25.0469V11H13.1357L10.75 13.3721ZM34.5605 22.918V42.0322L36.9248 44.4033H51.2207L53.6074 42.0322V22.918L51.2207 20.5459H36.9248L34.5605 22.918ZM48.835 39.6416H39.3105V25.3115H48.835V39.6416Z"
+                fill="currentColor"
+              />
             </svg>
+            <p>fonteiro</p>
           </h2>
           <div className="">
             <button
