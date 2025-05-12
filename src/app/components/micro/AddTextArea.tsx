@@ -19,17 +19,17 @@ const AddTextArea: React.FC<{
   addTextRef: React.RefObject<HTMLTextAreaElement | null>;
   addNewText: (text: string) => void;
   data?: TextArrProps | null;
-  editMode: boolean;
+  editMode: boolean | false;
 }> = ({ showAddText, setAddText, addTextRef, addNewText, editMode, data }) => {
   const [text, setText] = React.useState<string>("");
   const [valid, setValid] = React.useState<boolean>(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (data) {
+    if (data && editMode) {
       setText(data.text);
     }
-  }, [data]);
+  }, [data, editMode]);
 
   useEffect(() => {
     if ((text.length > 0 && !editMode) || (data?.text !== text && editMode)) {
@@ -64,6 +64,7 @@ const AddTextArea: React.FC<{
     setText("");
     setValid(false);
     setAddText("off");
+    data = null;
   };
 
   return (
