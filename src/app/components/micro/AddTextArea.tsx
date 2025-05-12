@@ -32,7 +32,7 @@ const AddTextArea: React.FC<{
   }, [data]);
 
   useEffect(() => {
-    if (text.length > 0 || (data?.text !== text && editMode)) {
+    if ((text.length > 0 && !editMode) || (data?.text !== text && editMode)) {
       setValid(true);
     } else {
       setValid(false);
