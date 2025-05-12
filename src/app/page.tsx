@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import LeftPannel from "./components/Areas/LeftPannel";
 import CentralPannel from "./components/Areas/CentralPannel";
 import RightPannel from "./components/Areas/RightPannel";
@@ -35,6 +35,7 @@ export default function Home() {
     null
   );
 
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -61,22 +62,9 @@ export default function Home() {
     });
   }, [dispatch]);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle(
-      "dark",
-      localStorage.theme === "dark" ||
-        (!("theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-    );
-    localStorage.theme = "light";
-    localStorage.theme = "dark";
-    localStorage.removeItem("theme");
-  }, []);
-
   return (
     <div className="grid pot:grid-cols-[20%_60%_20%] det:grid-cols-[15%_70%_15%] w-full h-screen">
       <aside className="pot:hidden inline-flex fixed top-0 left-0 w-full h-screen bg-white"></aside>
-
       <LeftPannel
         buttonRef={buttonRef}
         color={color}

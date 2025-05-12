@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Reducer from "./reducer";
+import { ThemeProvider } from "./components/MainFunc/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Fonteiro",
@@ -20,14 +21,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="pt-BR">
       <body
         className={`${inter.className} antialiased`}
         cz-shortcut-listen="true"
       >
-        <Reducer>{children}</Reducer>
+        <ThemeProvider>
+          <Reducer>{children}</Reducer>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import PickerModal from "../PickerModal";
 import "tippy.js/dist/tippy.css";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { updateText, removeText } from "../../Redux/slices/textsSlice";
 import Link from "next/link";
+import { ThemeContext } from "../MainFunc/ThemeProvider";
 
 type TextProps = "off" | "on" | "none";
 
@@ -224,16 +225,20 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
 }) => {
   const texts = useSelector((state: RootState) => state.texts);
   const fonts = useSelector((state: RootState) => state.fonts);
+  const { toggleTheme } = useContext(ThemeContext)!;
 
   return (
-    <div className="border-r h-screen border-zinc-200 flex items-start flex-col justify-between py-8">
+    <div className="border-r h-screen bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 flex items-start flex-col justify-between py-8">
       <section className="w-full">
         <header className="det:px-5 pot:px-3 flex items-center justify-between">
-          <h2 className="font-semibold text-lg text-zinc-900">
+          <h2 className="font-semibold text-lg dark:text-white text-zinc-900">
             fontero
           </h2>
           <div className="">
-            <button className="flex items-center text-blue-500 justify-center w-7 h-7 gap-2 rounded-full border border-blue-500 bg-white text-[14px]">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center cursor-pointer transition-all hover:opacity-75 text-blue-500 justify-center w-7 h-7 gap-2 rounded-full border border-blue-500 dark:bg-zinc-800 bg-white text-[14px]"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -252,8 +257,10 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
             </button>
           </div>
         </header>
-        <section className="border-t det:px-5 pot:px-3 w-full border-zinc-200 mt-4 pt-4">
-          <h2 className="text-zinc-700 font-medium text-[15px]">Página</h2>
+        <section className="border-t det:px-5 pot:px-3 w-full dark:border-zinc-800 border-zinc-200 mt-4 pt-4">
+          <h2 className="text-zinc-700 dark:text-zinc-100 font-medium text-[15px]">
+            Página
+          </h2>
           <div className="mt-3">
             <button
               ref={buttonRef}
@@ -266,13 +273,15 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
                 }}
                 className="w-5 h-5 border border-zinc-300 rounded-sm"
               ></div>
-              <p className="uppercase text-[13px] text-zinc-700">{color}</p>
+              <p className="uppercase text-[13px] dark:text-white text-zinc-700">
+                {color}
+              </p>
             </button>
           </div>
           <div>
             <label
               htmlFor="space-bet"
-              className="text-zinc-700 text-[14px] font-medium mt-4 flex items-center gap-2"
+              className="text-zinc-700 dark:text-white text-[14px] font-medium mt-4 flex items-center gap-2"
             >
               Espaço entre os textos
             </label>
@@ -284,15 +293,17 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
               onChange={(e) => {
                 setSpaceBetweenTexts(e.target.value.replace(/[^0-9]/g, ""));
               }}
-              className="border outline-none py-1 border-zinc-200 text-[14px] px-2 rounded-md mt-2 w-[30%]"
+              className="border outline-none py-1 dark:text-white dark:border-zinc-700 border-zinc-200 text-[14px] px-2 rounded-md mt-2 w-[30%]"
             />
           </div>
         </section>
       </section>
-      <section className="border-t pb-5 det:px-5 px-3 h-full overflow-y-auto w-full border-zinc-200 mt-7 pt-4">
-        <h2 className="text-zinc-700 font-medium text-[15px]">Designs</h2>
+      <section className="border-t pb-5 det:px-5 px-3 h-full overflow-y-auto w-full dark:border-zinc-800 border-zinc-200 mt-7 pt-4">
+        <h2 className="text-zinc-700 dark:text-zinc-100 font-medium text-[15px]">
+          Designs
+        </h2>
         {texts.length === 0 && (
-          <p className="text-zinc-500 text-[13px] pe-4">
+          <p className="text-zinc-500 dark:text-zinc-500 text-[13px] pe-4">
             Sem textos adicionados, tente adicionar um texto.
           </p>
         )}
@@ -317,6 +328,27 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
               onClick={() => setAddText("on")}
               className="w-full transition-all hover:bg-blue-600 cursor-pointer bg-blue-500 py-2 gap-2 text-[15px] text-white rounded-lg flex items-center justify-center"
             >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="icon icon-tabler icons-tabler-outline icon-tabler-texture"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M6 3l-3 3" />
+                <path d="M21 18l-3 3" />
+                <path d="M11 3l-8 8" />
+                <path d="M16 3l-13 13" />
+                <path d="M21 3l-18 18" />
+                <path d="M21 8l-13 13" />
+                <path d="M21 13l-8 8" />
+              </svg>
               Adicionar Texto
             </button>
           </footer>
@@ -327,7 +359,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
           <Link
             href={"https://github.com/mariosalembe23"}
             target="_blank"
-            className="w-8 h-8 flex items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
+            className="w-8 h-8 flex items-center justify-center rounded-full border dark:bg-zinc-800 dark:border-zinc-700 dark:text-white border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -346,7 +378,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
           <Link
             href={"https://www.linkedin.com/in/m%C3%A1rio-salembe-5211792a6/"}
             target="_blank"
-            className="w-8 h-8 flex items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
+            className="w-8 h-8 flex items-center justify-center rounded-full border dark:bg-zinc-800 dark:border-zinc-700 dark:text-white border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -369,7 +401,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
           <Link
             href={"https://dribbble.com/mariosalembe_"}
             target="_blank"
-            className="w-8 h-8 flex items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
+            className="w-8 h-8 flex items-center justify-center rounded-full border dark:bg-zinc-800 dark:border-zinc-700 dark:text-white border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -389,7 +421,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
             </svg>
           </Link>
         </div>
-        <div className="text-zinc-600 mt-4">
+        <div className="text-zinc-600 dark:text-zinc-500 mt-4">
           <p className="leading-none">Mário Salembe</p>
           <small>2023 © Todos os direitos reservados</small>
         </div>
