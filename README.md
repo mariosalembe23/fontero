@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fontero
 
-## Getting Started
+**Fontero** é um gerenciador de fontes personalizadas desenvolvido em [Next.js](https://nextjs.org), permitindo que você faça upload, visualize, gerencie e utilize diferentes fontes para criar e exportar designs personalizados. Ideal para designers, desenvolvedores e qualquer pessoa que deseje manipular textos com fontes customizadas diretamente no navegador.
 
-First, run the development server:
+## ✨ Funcionalidades
+
+- **Upload de fontes personalizadas**: Suporte a formatos `.ttf`, `.woff`, `.woff2` e `.otf`.
+- **Visualização instantânea**: Pré-visualize textos com as fontes carregadas.
+- **Gerenciamento de fontes**: Adicione, remova e alterne entre fontes facilmente.
+- **Edição de textos**: Crie múltiplos textos, ajuste tamanho, cor, peso e família tipográfica.
+- **Exportação**: Baixe o design como SVG.
+- **Tema claro/escuro**: Interface ajusta-se automaticamente ao tema do sistema.
+- **Responsividade**: Otimizado para desktops — mensagem informativa é exibida em telas menores.
+
+## 🚀 Começando
+
+Clone o repositório e instale as dependências:
+
+```bash
+git clone https://github.com/mariosalembe23/fontero.git
+cd fontero
+npm install
+```
+
+Inicie o servidor de desenvolvimento:
 
 ```bash
 npm run dev
-# or
+# ou
 yarn dev
-# or
+# ou
 pnpm dev
-# or
+# ou
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🖼️ Como usar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Adicione uma fonte**: Clique para fazer upload de um arquivo de fonte suportado.
+2. **Crie um texto**: Adicione e edite textos, escolhendo fonte, tamanho, cor e peso.
+3. **Gerencie e remova fontes**: Remova fontes carregadas ou altere as fontes dos textos facilmente.
+4. **Exporte seu design**: Baixe como SVG para utilizar em outros projetos.
 
-## Learn More
+## 📦 Tecnologias Utilizadas
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js](https://nextjs.org) (React)
+- [Redux Toolkit](https://redux-toolkit.js.org/) para gerenciamento de estado
+- [opentype.js](https://github.com/opentypejs/opentype.js) para manipulação de fontes
+- [Tailwind CSS](https://tailwindcss.com) para estilização
+- [sonner](https://sonner.emilkowal.ski/) para notificações
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📝 Observações
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- O projeto utiliza [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para otimização automática de fontes.
+- Em telas menores, o uso é restrito e uma mensagem orienta o usuário a utilizar um dispositivo compatível.
 
-## Deploy on Vercel
+## 🌎 Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+A maneira mais fácil de publicar sua aplicação Next.js é na [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Veja mais em [documentação de deploy do Next.js](https://nextjs.org/docs/app/building-your-application/deploying).
+
+## 👤 Autor
+
+[Mário Salembe](https://www.linkedin.com/in/m%C3%A1rio-salembe-5211792a6/)  
+[GitHub](https://github.com/mariosalembe23)
+
+---
