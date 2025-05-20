@@ -189,7 +189,7 @@ const LeftPannel: React.FC<LeftPannelProps> = ({
       <footer className="det:px-5 px-3 flex flex-col items-start">
         <div className="flex items-center justify-center gap-2">
           <Link
-            href={"https://github.com/mariosalembe23"}
+            href={"https://github.com/mariosalembe23/fontero"}
             target="_blank"
             className="w-8 h-8 flex items-center justify-center rounded-full border dark:bg-zinc-800 dark:border-zinc-700 dark:text-white border-zinc-200 bg-white text-zinc-500 transition-all hover:bg-zinc-200 hover:text-zinc-900"
           >
